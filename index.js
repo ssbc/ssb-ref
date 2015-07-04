@@ -10,12 +10,12 @@ exports = module.exports =
 
 exports.isHash =
   function (data) {
-    return isString(data) && /^[A-Za-z0-9\/+]{43}=\.blake2s$/.test(data)
+    return isString(data) && /^[A-Za-z0-9\/+]{43}=\.sha256$/.test(data)
   }
 
 exports.isFeedId =
   function (data) {
-    return isString(data) && /^[A-Za-z0-9\/+]{43}=\.(?:blake2s|ed25519)$/.test(data)
+    return isString(data) && /^[A-Za-z0-9\/+]{43}=\.(?:sha256|ed25519)$/.test(data)
   }
 
 exports.isRef = exports
