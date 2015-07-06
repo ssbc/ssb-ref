@@ -7,8 +7,6 @@ var ref = require('ssb-ref')
 
 //check if a string is a tagged base64 string
 ref.isRef('Lihvp+fMdt5CihjbOY6eZc0qCe0eKsrN2wfgXV2E3PM=.blake2s')
-//check if a string is a hash (tagged with valid hash alg)
-ref.isHash('Lihvp+fMdt5CihjbOY6eZc0qCe0eKsrN2wfgXV2E3PM=.blake2s')
 
 //check if a string is a hash (tagged with valid hash alg)
 ref.isHash('Lihvp+fMdt5CihjbOY6eZc0qCe0eKsrN2wfgXV2E3PM=.blake2s')
