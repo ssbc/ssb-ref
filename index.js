@@ -3,14 +3,9 @@ function isString(s) {
   return 'string' === typeof s
 }
 
-exports = module.exports =
+exports.isLink =
   function (data) {
     return isString(data) && /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/.test(data)
-  }
-
-exports.isHash =
-  function (data) {
-    return isString(data) && /^(@|%|&)[A-Za-z0-9\/+]{43}=\.sha256$/.test(data)
   }
 
 exports.isFeedId =
@@ -28,4 +23,16 @@ exports.isBlobId =
     return isString(data) && /^&[A-Za-z0-9\/+]{43}=\.sha256$/.test(data)
   }
 
-exports.isRef = exports
+exports.type =
+  function (data) {
+    if (!exports.isLink(data))
+      return false
+    var c = data.charAt(0)
+    if (c == '@')
+      return 'feed'
+    if (c == '%')
+      return 'msg'
+    if (c == '&')
+      return 'blob'
+    return false
+  }
