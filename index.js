@@ -32,7 +32,6 @@ var isAddress = exports.isAddress =
   function (data) {
     if(!isString(data)) return false
   var parts = data.split(':')
-  console.log(parts, isIP(parts[0]), isInteger(+parts[1]))
 
   return (
     parts.length === 3
