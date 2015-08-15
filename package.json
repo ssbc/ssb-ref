@@ -7,8 +7,13 @@
     "type": "git",
     "url": "git://github.com/dominictarr/ssb-ref.git"
   },
-  "dependencies": {},
-  "devDependencies": {},
+  "dependencies": {
+    "ip-regex": "~1.0.3",
+    "is-valid-domain": "~0.0.1"
+  },
+  "devDependencies": {
+    "tape": "~4.0.1"
+  },
   "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://dominictarr.com)",
   "license": "MIT"
 }
