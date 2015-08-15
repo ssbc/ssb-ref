@@ -1,38 +1,70 @@
+var isDomain = require('is-valid-domain')
+var rx = require('ip-regex')({exact: true})
+var isIP = rx.test.bind(rx)
+
+var isInteger = Number.isInteger
 
 function isString(s) {
   return 'string' === typeof s
 }
 
-exports.isLink =
+var isLink = exports.isLinkId =
   function (data) {
     return isString(data) && /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/.test(data)
   }
 
-exports.isFeedId =
+var isFeedId = exports.isFeedId =
   function (data) {
     return isString(data) && /^@[A-Za-z0-9\/+]{43}=\.(?:sha256|ed25519)$/.test(data)
   }
 
-exports.isMsgId = 
+var isMsgId = exports.isMsgId =
   function (data) {
     return isString(data) && /^%[A-Za-z0-9\/+]{43}=\.sha256$/.test(data)
   }
 
-exports.isBlobId = 
+var isBlobId = exports.isBlobId =
   function (data) {
     return isString(data) && /^&[A-Za-z0-9\/+]{43}=\.sha256$/.test(data)
   }
 
-exports.type =
+var isAddress = exports.isAddress =
   function (data) {
-    if (!exports.isLink(data))
-      return false
-    var c = data.charAt(0)
-    if (c == '@')
+    if(!isString(data)) return false
+  var parts = data.split(':')
+  console.log(parts, isIP(parts[0]), isInteger(+parts[1]))
+
+  return (
+    parts.length === 3
+    && isFeedId(parts[2])
+    && isInteger(+parts[1])
+    && (
+      isIP(parts[0])
+      || isDomain(parts[0])
+      || parts[0] === 'localhost'
+    )
+  )
+}
+
+var isInvite = exports.isInvite =
+  function (data) {
+    if(!isString(data)) return false
+    var parts = data.split('~')
+    //console.log(parts, isAddress(parts[0]), /^[A-Za-z0-9\/+]{43}=$/.test(parts[1]))
+    return parts.length == 2 && isAddress(parts[0]) && /^[A-Za-z0-9\/+]{43}=$/.test(parts[1])
+  }
+
+exports.type =
+  function (id) {
+    var c = id.charAt(0)
+    if (c == '@' && isFeedId(id))
       return 'feed'
-    if (c == '%')
+    else if (c == '%' && isMsgId(id))
       return 'msg'
-    if (c == '&')
+    else if (c == '&' && isBlobId(id))
       return 'blob'
+    else if(isAddress(id)) return 'address'
+    else if(isInvite(id)) return 'invite'
+    else
     return false
   }
