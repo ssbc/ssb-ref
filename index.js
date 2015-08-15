@@ -8,22 +8,22 @@ function isString(s) {
   return 'string' === typeof s
 }
 
-var isLink = exports.isLinkId =
+var isLink = exports.isLink =
   function (data) {
     return isString(data) && /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/.test(data)
   }
 
-var isFeedId = exports.isFeedId =
+var isFeedId = exports.isFeed = exports.isFeedId =
   function (data) {
     return isString(data) && /^@[A-Za-z0-9\/+]{43}=\.(?:sha256|ed25519)$/.test(data)
   }
 
-var isMsgId = exports.isMsgId =
+var isMsgId = exports.isMsg = exports.isMsgId =
   function (data) {
     return isString(data) && /^%[A-Za-z0-9\/+]{43}=\.sha256$/.test(data)
   }
 
-var isBlobId = exports.isBlobId =
+var isBlobId = exports.isBlob = exports.isBlobId =
   function (data) {
     return isString(data) && /^&[A-Za-z0-9\/+]{43}=\.sha256$/.test(data)
   }
