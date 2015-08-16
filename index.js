@@ -55,6 +55,7 @@ var isInvite = exports.isInvite =
 
 exports.type =
   function (id) {
+    if(!isString(id)) return false
     var c = id.charAt(0)
     if (c == '@' && isFeedId(id))
       return 'feed'
