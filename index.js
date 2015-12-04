@@ -32,16 +32,10 @@ var isAddress = exports.isAddress =
   function (data) {
     if(!isString(data)) return false
   var parts = data.split(':')
-
+  var id = parts.pop(), port = parts.pop(), addr = parts.join(':')
   return (
-    parts.length === 3
-    && isFeedId(parts[2])
-    && isInteger(+parts[1])
-    && (
-      isIP(parts[0])
-      || isDomain(parts[0])
-      || parts[0] === 'localhost'
-    )
+    isFeedId(id) && isInteger(+port)
+    && (isIP(addr) || isDomain(addr) || addr === 'localhost')
   )
 }
 
