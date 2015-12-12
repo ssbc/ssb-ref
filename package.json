@@ -15,8 +15,7 @@
     "tape": "~4.0.1"
   },
   "scripts": {
-    "test": "node test/index.js",
-    "prepublish": "npm ls && npm test"
+    "test": "node test/index.js"
   },
   "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://dominictarr.com)",
   "license": "MIT"

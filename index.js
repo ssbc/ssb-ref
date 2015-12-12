@@ -8,6 +8,51 @@ function isString(s) {
   return 'string' === typeof s
 }
 
+var hasLink = exports.hasLink =
+  function (data) {
+    return isString(data) && /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/.exec(data)
+  }
+
+var hasFeedId = exports.hasFeed = exports.hasFeedId =
+  function (data) {
+    return isString(data) && /^@[A-Za-z0-9\/+]{43}=\.(?:sha256|ed25519)$/.exec(data)
+  }
+
+var hasMsgId = exports.hassMsg = exports.hasMsgId =
+  function (data) {
+    return isString(data) && /^%[A-Za-z0-9\/+]{43}=\.sha256$/.exec(data)
+  }
+
+var hasBlobId = exports.hasBlob = exports.hasBlobId =
+  function (data) {
+    return isString(data) && /^&[A-Za-z0-9\/+]{43}=\.sha256$/.exec(data)
+  }
+
+var hasAddress = exports.hasAddress =
+  function (data) {
+    if(!isString(data)) return false
+  var parts = data.split(':')
+
+  return (
+    parts.length === 3
+    && hasFeedId(parts[2])
+    && hasInteger(+parts[1])
+    && (
+      isIP(parts[0])
+      || isDomain(parts[0])
+      || parts[0] === 'localhost'
+    )
+  )
+}
+
+var hasInvite = exports.hasInvite =
+  function (data) {
+    if(!isString(data)) return false
+    var parts = data.split('~')
+    //console.log(parts, isAddress(parts[0]), /^[A-Za-z0-9\/+]{43}=$/.test(parts[1]))
+    return parts.length == 2 && hasAddress(parts[0]) && /^[A-Za-z0-9\/+]{43}=$/.exec(parts[1])
+  }
+
 var isLink = exports.isLink =
   function (data) {
     return isString(data) && /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/.test(data)
