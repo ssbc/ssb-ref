@@ -10,22 +10,22 @@ function isString(s) {
 
 var hasLink = exports.hasLink =
   function (data) {
-    return isString(data) && /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/.exec(data)
+    return /(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/.exec(data)
   }
 
 var hasFeedId = exports.hasFeed = exports.hasFeedId =
   function (data) {
-    return isString(data) && /^@[A-Za-z0-9\/+]{43}=\.(?:sha256|ed25519)$/.exec(data)
+    return /(@[A-Za-z0-9\/+]{43}=\.(?:sha256|ed25519))/.exec(data)
   }
 
-var hasMsgId = exports.hassMsg = exports.hasMsgId =
+var hasMsgId = exports.hasMsg = exports.hasMsgId =
   function (data) {
-    return isString(data) && /^%[A-Za-z0-9\/+]{43}=\.sha256$/.exec(data)
+    return /(%[A-Za-z0-9\/+]{43}=\.sha256)/.exec(data)
   }
 
 var hasBlobId = exports.hasBlob = exports.hasBlobId =
   function (data) {
-    return isString(data) && /^&[A-Za-z0-9\/+]{43}=\.sha256$/.exec(data)
+    return /(&[A-Za-z0-9\/+]{43}=\.sha256)/.exec(data)
   }
 
 var hasAddress = exports.hasAddress =
@@ -50,7 +50,29 @@ var hasInvite = exports.hasInvite =
     if(!isString(data)) return false
     var parts = data.split('~')
     //console.log(parts, isAddress(parts[0]), /^[A-Za-z0-9\/+]{43}=$/.test(parts[1]))
-    return parts.length == 2 && hasAddress(parts[0]) && /^[A-Za-z0-9\/+]{43}=$/.exec(parts[1])
+    return parts.length == 2 && hasAddress(parts[0]) ?  /([A-Za-z0-9\/+]{43}=)/.exec(parts[1]) : false
+  }
+
+var mentionIt = exports.mentionIt = 
+  function (data){
+    if(!isString(data)) return false
+    var mentions = ['hasInvite', 'hasBlob', 'hasMsg', 'hasFeed', 'hasInvite'].reduce(function(a, e){
+      var i = 0
+      var str = data
+      var t = exports[e](str)
+      var r = []
+      while(t){
+        console.log( t)
+        var mention = {}
+        mention.link = t[0]
+        r.push(mention)
+        str = str.slice(t.index + t[0].length)
+        console.log('string ring: ' + str) 
+        t = exports[e](str)
+      }
+      return a.concat(r)
+    }, [])
+    return mentions
   }
 
 var isLink = exports.isLink =
