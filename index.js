@@ -28,6 +28,11 @@ var hasBlobId = exports.hasBlob = exports.hasBlobId =
     return /(&[A-Za-z0-9\/+]{43}=\.sha256)/.exec(data)
   }
 
+var hasTagId = exports.hasTag = exports.hasTagId =
+  function (data) {
+    return /(#[A-Za-z0-9\/+]{43}=\.sha256)/.exec(data)
+  }
+
 var hasAddress = exports.hasAddress =
   function (data) {
     if(!isString(data)) return false
@@ -93,6 +98,11 @@ var isMsgId = exports.isMsg = exports.isMsgId =
 var isBlobId = exports.isBlob = exports.isBlobId =
   function (data) {
     return isString(data) && /^&[A-Za-z0-9\/+]{43}=\.sha256$/.test(data)
+  }
+
+var isTagId = exports.isTag = exports.isTagId =
+  function (data) {
+    return isString(data) && /^#[A-Za-z0-9\/+]{43}=\.sha256$/.test(data)
   }
 
 var isAddress = exports.isAddress =
