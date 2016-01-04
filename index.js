@@ -71,6 +71,7 @@ exports.extract =
     var _data = data
     try { _data = decodeURIComponent(data) }
     catch (e) {} // this may fail if it's not encoded, so don't worry if it does
+    _data = _data.replace(/&amp;/g, '&')
 
     var res = /([@%&][A-Za-z0-9\/+]{43}=\.[\w\d]+)/.exec(_data)
     return res && res[0]
