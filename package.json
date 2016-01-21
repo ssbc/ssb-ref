@@ -1,7 +1,7 @@
 {
   "name": "ssb-ref",
   "description": "",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "homepage": "https://github.com/dominictarr/ssb-ref",
   "repository": {
     "type": "git",
