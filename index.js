@@ -1,5 +1,4 @@
 var isDomain = require('is-valid-domain')
-var rx = require('ip-regex')({exact: true})
 var ip = require('ip')
 
 function isIP (s) {
@@ -80,4 +79,5 @@ exports.extract =
     var res = /([@%&][A-Za-z0-9\/+]{43}=\.[\w\d]+)/.exec(_data)
     return res && res[0]
   }
+
 
