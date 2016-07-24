@@ -1,7 +1,7 @@
 {
   "name": "ssb-ref",
   "description": "",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "homepage": "https://github.com/dominictarr/ssb-ref",
   "repository": {
     "type": "git",
@@ -21,4 +21,3 @@
   "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://dominictarr.com)",
   "license": "MIT"
 }
-
