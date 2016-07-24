@@ -1,6 +1,10 @@
 var isDomain = require('is-valid-domain')
 var rx = require('ip-regex')({exact: true})
-var isIP = rx.test.bind(rx)
+var ip = require('ip')
+
+function isIP (s) {
+  return ip.isV4Format(s) || ip.isV6Format(s)
+}
 
 var isInteger = Number.isInteger
 
@@ -76,3 +80,4 @@ exports.extract =
     var res = /([@%&][A-Za-z0-9\/+]{43}=\.[\w\d]+)/.exec(_data)
     return res && res[0]
   }
+
