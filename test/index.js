@@ -1,3 +1,6 @@
+var invite1 = "net:145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=:DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
+var invite2 = "145.12.20.3:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519~DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
+
 var ipv6Addr = "2a03:2267::ba27:ebff:fe8c:5a4d:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519"
 var ipv6Invite = "2a03:2267::ba27:ebff:fe8c:5a4d:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519~DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
 var ipv6AddrLocal = "::1:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519"
@@ -13,6 +16,53 @@ tape('ipv6 invite', function (t) {
   t.ok(R.isInvite(ipv6InviteLocal))
   t.end()
 })
+
+
+tape('multiserver invite', function (t) {
+  var rand = Math.random()
+  t.ok(R.isMultiServerInvite(invite1))
+  t.deepEqual(
+    R.parseMultiServerInvite(invite1),
+    {
+      invite: invite1,
+      remote: 'net:145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=',
+      key: '@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519',
+      redirect: null
+    })
+  t.deepEqual(
+    R.parseMultiServerInvite(invite1+'#'+rand),
+    {
+      invite: invite1,
+      remote: 'net:145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=',
+      key: '@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519',
+      redirect: '#'+rand
+    })
+  t.end()
+})
+
+tape('legacy invite', function (t) {
+  var rand = Math.random()
+  t.ok(R.isLegacyInvite(invite2))
+  t.deepEqual(
+    R.parseLegacyInvite(invite2),
+    {
+      invite: invite1,
+      remote: 'net:145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=',
+      key: '@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519',
+      redirect: null
+    })
+
+  t.deepEqual(
+    R.parseLegacyInvite(invite2+'#'+rand),
+    {
+      invite: invite1,
+      remote: 'net:145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=',
+      key: '@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519',
+      redirect: '#'+rand
+    })
+  t.end()
+})
+
 
 var msgRef = '%pGzeEydYdHjKW1iIchR0Yumydsr3QSp8+FuYcwVwi8Q=.sha256'
 var msgUrls = [
@@ -55,5 +105,12 @@ tape('extract', function (t) {
   })
   t.end()
 })
+
+
+
+
+
+
+
 
 
