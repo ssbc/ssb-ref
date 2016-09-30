@@ -12,6 +12,14 @@ function isString(s) {
   return 'string' === typeof s
 }
 
+var isHost = function (addr) {
+  return isIP(addr) || isDomain(addr) || addr === 'localhost'
+}
+
+var isPort = function (p) {
+  return isInteger(p) && p <= 65536
+}
+
 var isLink = exports.isLink =
   function (data) {
     return isString(data) && /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/.test(data)
@@ -32,19 +40,52 @@ var isBlobId = exports.isBlob = exports.isBlobId =
     return isString(data) && /^&[A-Za-z0-9\/+]{43}=\.sha256$/.test(data)
   }
 
-var isAddress = exports.isAddress =
-  function (data) {
+var parseMultiServerAddress = function (data) {
     if(!isString(data)) return false
+  if(!/^net\:.+~shs\:/.test(data)) return false
+  data = data.split('~').map(function (e) {
+    return e.split(':')
+  })
+  console.log(data, data.length, data[0].length, data[1].length)
+
+  if(data.length != 2) return false
+  if(data[0].length != 3) return false
+  if(!(data[1].length == 2 || data[1].length == 3)) return false
+  if(data[0][0] !== 'net') return false
+  if(data[1][0] !== 'shs') return false
+
+  var host = data[0][1]
+  var port = +data[0][2]
+  var key = '@'+data[1][1]+'.ed25519'
+  var seed = data[1][2]
+
+  if(!(isHost(host) && isPort(+port) && isFeedId(key))) return false
+  var addr = {
+    host: host,
+    port: port,
+    key: key,
+  }
+  if(seed)
+    addr.seed = seed
+
+  return addr
+}
+
+var isAddress = exports.isAddress = function (data) {
+  if(!isString(data)) return false
+  if(parseMultiServerAddress(data)) return true
   var parts = data.split(':')
-  var id = parts.pop(), port = parts.pop(), addr = parts.join(':')
+  var id = parts.pop(), port = parts.pop(), host = parts.join(':')
   return (
     isFeedId(id) && isInteger(+port)
-    && (isIP(addr) || isDomain(addr) || addr === 'localhost')
+    && isHost(host)
   )
 }
 
 var parseAddress = exports.parseAddress = function (e) {
   if(isString(e)) {
+    if(~e.indexOf('~'))
+      return parseMultiServerAddress(e)
     var parts = e.split(':')
     var id = parts.pop(), port = parts.pop(), host = parts.join(':')
     var e = {
@@ -81,7 +122,6 @@ var isMultiServerInvite = exports.isMultiServerInvite =
 
 var isInvite = exports.isInvite =
   function (data) {
-    console.log('isInvite?', data, isLegacyInvite(data), isMultiServerInvite(data))
     if(!isString(data)) return false
     return isLegacyInvite(data) || isMultiServerInvite(data)
   }
@@ -171,4 +211,17 @@ exports.extract =
     var res = /([@%&][A-Za-z0-9\/+]{43}=\.[\w\d]+)/.exec(_data)
     return res && res[0]
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
