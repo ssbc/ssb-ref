@@ -1,5 +1,6 @@
 var invite1 = "net:145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=:DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
 var invite2 = "145.12.20.3:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519~DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
+var multiserver1 = "net:145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc="
 
 var ipv6Addr = "2a03:2267::ba27:ebff:fe8c:5a4d:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519"
 var ipv6Invite = "2a03:2267::ba27:ebff:fe8c:5a4d:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519~DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
@@ -63,6 +64,19 @@ tape('legacy invite', function (t) {
   t.end()
 })
 
+tape('parse multiserver address to legacy', function (t) {
+
+  t.ok(R.isAddress(multiserver1))
+  t.deepEqual(R.parseAddress(multiserver1), {
+    host: "145.12.20.3",
+    port :8080,
+    key: "@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519"
+  })
+
+  t.end()
+
+})
+
 
 var msgRef = '%pGzeEydYdHjKW1iIchR0Yumydsr3QSp8+FuYcwVwi8Q=.sha256'
 var msgUrls = [
@@ -105,6 +119,8 @@ tape('extract', function (t) {
   })
   t.end()
 })
+
+
 
 
 
