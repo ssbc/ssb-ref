@@ -13,11 +13,15 @@ function isString(s) {
 }
 
 var isHost = function (addr) {
-  return isIP(addr) || isDomain(addr) || addr === 'localhost'
+  return ('string' === typeof addr && isIP(addr)) || isDomain(addr) || addr === 'localhost'
 }
 
 var isPort = function (p) {
   return isInteger(p) && p <= 65536
+}
+
+function isObject (o) {
+  return o && 'object' === typeof o && !Array.isArray(o)
 }
 
 var isLink = exports.isLink =
@@ -46,7 +50,6 @@ var parseMultiServerAddress = function (data) {
   data = data.split('~').map(function (e) {
     return e.split(':')
   })
-  console.log(data, data.length, data[0].length, data[1].length)
 
   if(data.length != 2) return false
   if(data[0].length != 3) return false
@@ -72,10 +75,18 @@ var parseMultiServerAddress = function (data) {
 }
 
 var isAddress = exports.isAddress = function (data) {
-  if(!isString(data)) return false
-  if(parseMultiServerAddress(data)) return true
-  var parts = data.split(':')
-  var id = parts.pop(), port = parts.pop(), host = parts.join(':')
+  var host, port, id
+  if(isObject(data)) {
+    id = data.key
+    host = data.host
+    port = data.port
+  }
+  else if(!isString(data)) return false
+  else if(parseMultiServerAddress(data)) return true
+  else {
+    var parts = data.split(':')
+    var id = parts.pop(), port = parts.pop(), host = parts.join(':')
+  }
   return (
     isFeedId(id) && isInteger(+port)
     && isHost(host)
@@ -211,17 +222,5 @@ exports.extract =
     var res = /([@%&][A-Za-z0-9\/+]{43}=\.[\w\d]+)/.exec(_data)
     return res && res[0]
   }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
