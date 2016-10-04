@@ -46,7 +46,7 @@ var isBlobId = exports.isBlob = exports.isBlobId =
 
 var parseMultiServerAddress = function (data) {
     if(!isString(data)) return false
-  if(!/^net\:.+~shs\:/.test(data)) return false
+  if(!/^\w+\:.+~shs\:/.test(data)) return false
   data = data.split('~').map(function (e) {
     return e.split(':')
   })
@@ -54,7 +54,7 @@ var parseMultiServerAddress = function (data) {
   if(data.length != 2) return false
   if(data[0].length != 3) return false
   if(!(data[1].length == 2 || data[1].length == 3)) return false
-  if(data[0][0] !== 'net') return false
+  if(data[0][0] !== 'net' && data[0][0] !== 'onion') return false
   if(data[1][0] !== 'shs') return false
 
   var host = data[0][1]
