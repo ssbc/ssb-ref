@@ -121,7 +121,6 @@ var isLegacyInvite = exports.isLegacyInvite =
   function (data) {
     if(!isString(data)) return false
     var parts = data.split('~')
-    console.log('isAddress?', parts[0], isAddress(parts[0]))
     return parts.length == 2 && isAddress(parts[0]) && /^[A-Za-z0-9\/+]{43}=$/.test(parts[1])
   }
 
@@ -222,5 +221,6 @@ exports.extract =
     var res = /([@%&][A-Za-z0-9\/+]{43}=\.[\w\d]+)/.exec(_data)
     return res && res[0]
   }
+
 
 
