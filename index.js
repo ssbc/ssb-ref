@@ -45,20 +45,20 @@ var isBlobId = exports.isBlob = exports.isBlobId =
   }
 
 var parseMultiServerAddress = function (data) {
-    if(!isString(data)) return false
+  if(!isString(data)) return false
   if(!/^\w+\:.+~shs\:/.test(data)) return false
   data = data.split('~').map(function (e) {
     return e.split(':')
   })
 
   if(data.length != 2) return false
-  if(data[0].length != 3) return false
+  if(!(data[0].length >= 3)) return false
   if(!(data[1].length == 2 || data[1].length == 3)) return false
   if(data[0][0] !== 'net' && data[0][0] !== 'onion') return false
   if(data[1][0] !== 'shs') return false
 
-  var host = data[0][1]
-  var port = +data[0][2]
+  var port = +data[0][data[0].length - 1] //last item is port, handle ipv6
+  var host = data[0].slice(1, data[0].length - 2).join(':') //ipv6
   var key = '@'+data[1][1]+'.ed25519'
   var seed = data[1][2]
 
@@ -88,7 +88,7 @@ var isAddress = exports.isAddress = function (data) {
     var id = parts.pop(), port = parts.pop(), host = parts.join(':')
   }
   return (
-    isFeedId(id) && isInteger(+port)
+    isFeedId(id) && isPort(+port)
     && isHost(host)
   )
 }
@@ -120,6 +120,7 @@ var toAddress = exports.toAddress = function (e) {
 var isLegacyInvite = exports.isLegacyInvite =
   function (data) {
     if(!isString(data)) return false
+    data = data.replace(/#.*$/, '')
     var parts = data.split('~')
     return parts.length == 2 && isAddress(parts[0]) && /^[A-Za-z0-9\/+]{43}=$/.test(parts[1])
   }
@@ -221,6 +222,10 @@ exports.extract =
     var res = /([@%&][A-Za-z0-9\/+]{43}=\.[\w\d]+)/.exec(_data)
     return res && res[0]
   }
+
+
+
+
 
 
 
