@@ -24,29 +24,34 @@ function isObject (o) {
   return o && 'object' === typeof o && !Array.isArray(o)
 }
 
+var linkRegex = exports.linkRegex = /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/
 var isLink = exports.isLink =
   function (data) {
-    return isString(data) && /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/.test(data)
+    return isString(data) && linkRegex.test(data)
   }
 
+var feedIdRegex = exports.feedIdRegex = /^@[A-Za-z0-9\/+]{43}=\.(?:sha256|ed25519)$/
 var isFeedId = exports.isFeed = exports.isFeedId =
   function (data) {
-    return isString(data) && /^@[A-Za-z0-9\/+]{43}=\.(?:sha256|ed25519)$/.test(data)
+    return isString(data) && feedIdRegex.test(data)
   }
 
+var msgIdRegex = exports.msgIdRegex = /^%[A-Za-z0-9\/+]{43}=\.sha256$/
 var isMsgId = exports.isMsg = exports.isMsgId =
   function (data) {
-    return isString(data) && /^%[A-Za-z0-9\/+]{43}=\.sha256$/.test(data)
+    return isString(data) && msgIdRegex.test(data)
   }
 
+var blobIdRegex = exports.blobIdRegex = /^&[A-Za-z0-9\/+]{43}=\.sha256$/
 var isBlobId = exports.isBlob = exports.isBlobId =
   function (data) {
-    return isString(data) && /^&[A-Za-z0-9\/+]{43}=\.sha256$/.test(data)
+    return isString(data) && blobIdRegex.test(data)
   }
 
+var multiServerAddressRegex = /^\w+\:.+~shs\:/
 var parseMultiServerAddress = function (data) {
   if(!isString(data)) return false
-  if(!/^\w+\:.+~shs\:/.test(data)) return false
+  if(!multiServerAddressRegex.test(data)) return false
   data = data.split('~').map(function (e) {
     return e.split(':')
   })
@@ -117,12 +122,14 @@ var toAddress = exports.toAddress = function (e) {
 }
 
 
+var legacyInviteRegex = /^[A-Za-z0-9\/+]{43}=$/
+var legacyInviteFixerRegex = /#.*$/
 var isLegacyInvite = exports.isLegacyInvite =
   function (data) {
     if(!isString(data)) return false
-    data = data.replace(/#.*$/, '')
+    data = data.replace(legacyInviteFixerRegex, '')
     var parts = data.split('~')
-    return parts.length == 2 && isAddress(parts[0]) && /^[A-Za-z0-9\/+]{43}=$/.test(parts[1])
+    return parts.length == 2 && isAddress(parts[0]) && legacyInviteRegex.test(parts[1])
   }
 
 var isMultiServerInvite = exports.isMultiServerInvite =
@@ -155,6 +162,7 @@ function parseLegacyInvite (invite) {
   }
 }
 
+var multiServerInviteRegex = /^(net|wss?)$/
 function parseMultiServerInvite (invite) {
 
   var redirect = invite.split('#')
@@ -166,7 +174,7 @@ function parseMultiServerInvite (invite) {
   .map(function (e) { return e.split(':') })
 
   if(parts.length !== 2) return null
-  if(!/^(net|wss?)$/.test(parts[0][0])) return null
+  if(!multiServerInviteRegex.test(parts[0][0])) return null
   if(parts[1][0] !== 'shs') return null
   if(parts[1].length !== 3) return null
   var p2 = invite.split(':')
@@ -209,6 +217,7 @@ exports.type =
     return false
   }
 
+var extractRegex = /([@%&][A-Za-z0-9\/+]{43}=\.[\w\d]+)/
 exports.extract =
   function (data) {
     if (!isString(data))
@@ -219,13 +228,7 @@ exports.extract =
     catch (e) {} // this may fail if it's not encoded, so don't worry if it does
     _data = _data.replace(/&amp;/g, '&')
 
-    var res = /([@%&][A-Za-z0-9\/+]{43}=\.[\w\d]+)/.exec(_data)
+    var res = extractRegex.exec(_data)
     return res && res[0]
   }
-
-
-
-
-
-
 
