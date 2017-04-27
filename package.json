@@ -2,10 +2,10 @@
   "name": "ssb-ref",
   "description": "",
   "version": "2.6.3",
-  "homepage": "https://github.com/dominictarr/ssb-ref",
+  "homepage": "https://github.com/ssbc/ssb-ref",
   "repository": {
     "type": "git",
-    "url": "git://github.com/dominictarr/ssb-ref.git"
+    "url": "git://github.com/ssbc/ssb-ref.git"
   },
   "dependencies": {
     "ip": "^1.1.3",
