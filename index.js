@@ -63,7 +63,7 @@ var parseMultiServerAddress = function (data) {
   if(data[1][0] !== 'shs') return false
 
   var port = +data[0][data[0].length - 1] //last item is port, handle ipv6
-  var host = data[0].slice(1, data[0].length - 2).join(':') //ipv6
+  var host = data[0].slice(1, data[0].length - 1).join(':') //ipv6
   var key = '@'+data[1][1]+'.ed25519'
   var seed = data[1][2]
 

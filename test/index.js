@@ -29,7 +29,6 @@ tape('ipv6 invite', function (t) {
   t.end()
 })
 
-return
 tape('multiserver invite', function (t) {
   var rand = Math.random()
   t.ok(R.isMultiServerInvite(invite1))
