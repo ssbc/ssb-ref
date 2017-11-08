@@ -151,7 +151,10 @@ function parseLegacyInvite (invite) {
   var parts = invite.split('~')
   var addr = toAddress(parts[0])//.split(':')
   //convert legacy code to multiserver invite code.
-  var remote = 'net:'+addr.host+':'+addr.port+'~shs:'+addr.key.slice(1, -8)
+  var protocol = 'net:'
+  if (addr.host.endsWith(".onion"))
+    protocol = 'onion:'
+  var remote = protocol+addr.host+':'+addr.port+'~shs:'+addr.key.slice(1, -8)
   invite = remote+':'+parts[1]
   return {
     invite: remote + ':' + parts[1],
@@ -162,7 +165,7 @@ function parseLegacyInvite (invite) {
   }
 }
 
-var multiServerInviteRegex = /^(net|wss?)$/
+var multiServerInviteRegex = /^(net|wss|onion?)$/
 function parseMultiServerInvite (invite) {
 
   var redirect = invite.split('#')
