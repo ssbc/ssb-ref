@@ -48,6 +48,16 @@ var isBlobId = exports.isBlob = exports.isBlobId =
     return isString(data) && blobIdRegex.test(data)
   }
 
+var normalizeChannel = exports.normalizeChannel =
+  function (data) {
+    if (typeof data === 'string') {
+      data = data.toLowerCase().replace(/\s/g, '')
+      if (data.length > 0 && data.length < 30) {
+        return data
+      }
+    }
+  }
+
 var multiServerAddressRegex = /^\w+\:.+~shs\:/
 var parseMultiServerAddress = function (data) {
   if(!isString(data)) return false
