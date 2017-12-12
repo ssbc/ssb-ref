@@ -51,7 +51,7 @@ var isBlobId = exports.isBlob = exports.isBlobId =
 var normalizeChannel = exports.normalizeChannel =
   function (data) {
     if (typeof data === 'string') {
-      data = data.toLowerCase().replace(/\s/g, '')
+      data = data.toLowerCase().replace(/\s|,|\.|\?|!|<|>|\(|\)|\[|\]|"|#/g, '')
       if (data.length > 0 && data.length < 30) {
         return data
       }
@@ -244,4 +244,3 @@ exports.extract =
     var res = extractRegex.exec(_data)
     return res && res[0]
   }
-
