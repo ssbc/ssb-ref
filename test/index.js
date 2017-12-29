@@ -1,5 +1,6 @@
 var invite1 = "net:145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=:DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
 var invite2 = "145.12.20.3:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519~DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
+var invite1ws = "ws://145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=:DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
 var multiserver1 = "net:145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc="
 var multiserver2 = "onion:xyz.onion:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc="
 
@@ -37,6 +38,14 @@ tape('multiserver invite', function (t) {
     {
       invite: invite1,
       remote: 'net:145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=',
+      key: '@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519',
+      redirect: null
+    })
+  t.deepEqual(
+    R.parseInvite(invite1ws),
+    {
+      invite: invite1ws,
+      remote: 'ws://145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=',
       key: '@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519',
       redirect: null
     })
@@ -155,6 +164,7 @@ tape('extract', function (t) {
   })
   t.end()
 })
+
 
 
 
