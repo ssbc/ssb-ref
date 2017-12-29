@@ -1,11 +1,12 @@
 var isDomain = require('is-valid-domain')
 var ip = require('ip')
-var protocolRegex = /^(net|wss?|onion?)$/
+var protocolRegex = /^(net|wss?|onion)$/
 var linkRegex = exports.linkRegex = /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/
 var feedIdRegex = exports.feedIdRegex = /^@[A-Za-z0-9\/+]{43}=\.(?:sha256|ed25519)$/
 var msgIdRegex = exports.msgIdRegex = /^%[A-Za-z0-9\/+]{43}=\.sha256$/
 var blobIdRegex = exports.blobIdRegex = /^&[A-Za-z0-9\/+]{43}=\.sha256$/
 var multiServerAddressRegex = /^\w+\:.+~shs\:/
+var extractRegex = /([@%&][A-Za-z0-9\/+]{43}=\.[\w\d]+)/
 
 function isIP (s) {
   return ip.isV4Format(s) || ip.isV6Format(s)
@@ -230,7 +231,6 @@ exports.type =
     return false
   }
 
-var extractRegex = /([@%&][A-Za-z0-9\/+]{43}=\.[\w\d]+)/
 exports.extract =
   function (data) {
     if (!isString(data))
@@ -244,4 +244,5 @@ exports.extract =
     var res = extractRegex.exec(_data)
     return res && res[0]
   }
+
 
