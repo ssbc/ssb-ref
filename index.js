@@ -69,7 +69,7 @@ var parseMultiServerAddress = function (data) {
   if(data.length != 2) return false
   if(!(data[0].length >= 3)) return false
   if(!(data[1].length == 2 || data[1].length == 3)) return false
-  if(data[0][0] !== 'net' && data[0][0] !== 'onion') return false
+  if(!/^(net|ws|onion)$/.test(data[0][0])) return false
   if(data[1][0] !== 'shs') return false
 
   var port = +data[0][data[0].length - 1] //last item is port, handle ipv6
