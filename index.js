@@ -1,5 +1,11 @@
 var isDomain = require('is-valid-domain')
 var ip = require('ip')
+var protocolRegex = /^(net|wss?|onion?)$/
+var linkRegex = exports.linkRegex = /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/
+var feedIdRegex = exports.feedIdRegex = /^@[A-Za-z0-9\/+]{43}=\.(?:sha256|ed25519)$/
+var msgIdRegex = exports.msgIdRegex = /^%[A-Za-z0-9\/+]{43}=\.sha256$/
+var blobIdRegex = exports.blobIdRegex = /^&[A-Za-z0-9\/+]{43}=\.sha256$/
+var multiServerAddressRegex = /^\w+\:.+~shs\:/
 
 function isIP (s) {
   return ip.isV4Format(s) || ip.isV6Format(s)
@@ -24,25 +30,21 @@ function isObject (o) {
   return o && 'object' === typeof o && !Array.isArray(o)
 }
 
-var linkRegex = exports.linkRegex = /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/
 var isLink = exports.isLink =
   function (data) {
     return isString(data) && linkRegex.test(data)
   }
 
-var feedIdRegex = exports.feedIdRegex = /^@[A-Za-z0-9\/+]{43}=\.(?:sha256|ed25519)$/
 var isFeedId = exports.isFeed = exports.isFeedId =
   function (data) {
     return isString(data) && feedIdRegex.test(data)
   }
 
-var msgIdRegex = exports.msgIdRegex = /^%[A-Za-z0-9\/+]{43}=\.sha256$/
 var isMsgId = exports.isMsg = exports.isMsgId =
   function (data) {
     return isString(data) && msgIdRegex.test(data)
   }
 
-var blobIdRegex = exports.blobIdRegex = /^&[A-Za-z0-9\/+]{43}=\.sha256$/
 var isBlobId = exports.isBlob = exports.isBlobId =
   function (data) {
     return isString(data) && blobIdRegex.test(data)
@@ -58,7 +60,6 @@ var normalizeChannel = exports.normalizeChannel =
     }
   }
 
-var multiServerAddressRegex = /^\w+\:.+~shs\:/
 var parseMultiServerAddress = function (data) {
   if(!isString(data)) return false
   if(!multiServerAddressRegex.test(data)) return false
@@ -69,7 +70,7 @@ var parseMultiServerAddress = function (data) {
   if(data.length != 2) return false
   if(!(data[0].length >= 3)) return false
   if(!(data[1].length == 2 || data[1].length == 3)) return false
-  if(!/^(net|ws|onion)$/.test(data[0][0])) return false
+  if(!protocolRegex.test(data[0][0])) return false
   if(data[1][0] !== 'shs') return false
 
   var port = +data[0][data[0].length - 1] //last item is port, handle ipv6
@@ -175,7 +176,6 @@ function parseLegacyInvite (invite) {
   }
 }
 
-var multiServerInviteRegex = /^(net|wss|onion?)$/
 function parseMultiServerInvite (invite) {
 
   var redirect = invite.split('#')
@@ -187,7 +187,7 @@ function parseMultiServerInvite (invite) {
   .map(function (e) { return e.split(':') })
 
   if(parts.length !== 2) return null
-  if(!multiServerInviteRegex.test(parts[0][0])) return null
+  if(!protocolRegex.test(parts[0][0])) return null
   if(parts[1][0] !== 'shs') return null
   if(parts[1].length !== 3) return null
   var p2 = invite.split(':')
@@ -244,4 +244,11 @@ exports.extract =
     var res = extractRegex.exec(_data)
     return res && res[0]
   }
+
+
+
+
+
+
+
 
