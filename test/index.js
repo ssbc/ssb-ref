@@ -17,7 +17,7 @@ var ipv6AddrLocal = "::1:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25
 var ipv6InviteLocal = "::1:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519~DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
 
 var blob = "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256"
-var secretBlob = "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256?unbox=abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs"
+var secretBlob = "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256?unbox=abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs&another=test"
 
 var R = require('../')
 var tape = require('tape')
@@ -171,15 +171,17 @@ tape('extract', function (t) {
 tape('blob', function (t) {
   t.ok(R.isBlob(blob))
   t.ok(R.isBlob(secretBlob))
-  t.notOk(R.isBlob(secretBlob.slice(0, -3)))
 
   t.deepEqual(R.parseBlob(blob), {
-    id: blob
+    link: blob
   })
 
   t.deepEqual(R.parseBlob(secretBlob), {
-    id: "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256",
-    key: "abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk="
+    link: "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256",
+    query: {
+      unbox: "abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs",
+      another: "test"
+    }
   })
 
   t.end()
