@@ -156,6 +156,15 @@ var blobUrls = [
   'http://localhost:7777/&amp;51ZXxNYIvTDCoNTE9R94NiEg3JAZAxWtKn4h4SmBwyY=.sha256?foo=bar'
 ]
 
+tape('extract with non url-encoded links', function (t) {
+  var messageIdWithNumberAtStart = '%09abcdefghyq9KH6dYMc/g17L04jDbl1py8arGQmL1I=.sha256'
+  t.equal(R.extract(messageIdWithNumberAtStart), messageIdWithNumberAtStart)
+  t.equal(R.extract(encodeURIComponent(messageIdWithNumberAtStart)), messageIdWithNumberAtStart)
+  t.equal(R.extract(encodeURIComponent(msgRef)), msgRef)
+  t.equal(R.extract(msgRef), msgRef)
+  t.end()
+})
+
 tape('extract', function (t) {
   msgUrls.forEach(function (url) {
     t.equal(R.extract(url), msgRef)

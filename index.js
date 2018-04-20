@@ -249,12 +249,18 @@ exports.extract =
       return false
 
     var _data = data
-    try { _data = decodeURIComponent(data) }
-    catch (e) {} // this may fail if it's not encoded, so don't worry if it does
-    _data = _data.replace(/&amp;/g, '&')
 
     var res = extractRegex.exec(_data)
-    return res && res[0]
+    if (res) {
+      return res && res[0]
+    } else {
+      try { _data = decodeURIComponent(data) }
+      catch (e) {} // this may fail if it's not encoded, so don't worry if it does
+      _data = _data.replace(/&amp;/g, '&')
+  
+      var res = extractRegex.exec(_data)
+      return res && res[0]
+    }
   }
 
 
