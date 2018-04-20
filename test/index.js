@@ -16,6 +16,9 @@ var ipv6Invite = "2a03:2267::ba27:ebff:fe8c:5a4d:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4
 var ipv6AddrLocal = "::1:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519"
 var ipv6InviteLocal = "::1:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519~DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
 
+var blob = "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256"
+var secretBlob = "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256?unbox=abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs&another=test"
+
 var R = require('../')
 var tape = require('tape')
 
@@ -165,12 +168,24 @@ tape('extract', function (t) {
   t.end()
 })
 
+tape('blob', function (t) {
+  t.ok(R.isBlob(blob))
+  t.ok(R.isBlob(secretBlob))
 
+  t.deepEqual(R.parseBlob(blob), {
+    link: blob
+  })
 
+  t.deepEqual(R.parseBlob(secretBlob), {
+    link: "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256",
+    query: {
+      unbox: "abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs",
+      another: "test"
+    }
+  })
 
-
-
-
+  t.end()
+})
 
 
 
