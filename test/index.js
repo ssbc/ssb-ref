@@ -18,6 +18,7 @@ var ipv6InviteLocal = "::1:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed
 
 var blob = "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256"
 var secretBlob = "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256?unbox=abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs&another=test"
+var secretMessage = "%abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256?unbox=abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs"
 
 var R = require('../')
 var tape = require('tape')
@@ -168,15 +169,25 @@ tape('extract', function (t) {
   t.end()
 })
 
+tape('parse link', function (t) {
+  t.deepEqual(R.parseLink(secretMessage), {
+    link: "%abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256",
+    query: {
+      unbox: "abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs"
+    }
+  })
+  t.end()
+})
+
 tape('blob', function (t) {
   t.ok(R.isBlob(blob))
   t.ok(R.isBlob(secretBlob))
 
-  t.deepEqual(R.parseBlob(blob), {
+  t.deepEqual(R.parseLink(blob), {
     link: blob
   })
 
-  t.deepEqual(R.parseBlob(secretBlob), {
+  t.deepEqual(R.parseLink(secretBlob), {
     link: "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256",
     query: {
       unbox: "abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs",
