@@ -181,11 +181,18 @@ tape('parse link', function (t) {
 
 tape('blob', function (t) {
   t.ok(R.isBlob(blob))
-  t.ok(R.isBlob(secretBlob))
 
-  t.deepEqual(R.parseLink(blob), {
+  // shouldn't accept a blob with a query string
+  // this should be handled by parseLink
+  t.notOk(R.isBlob(secretBlob))
+
+  var link = R.parseLink(blob)
+
+  t.deepEqual(link, {
     link: blob
   })
+
+  t.ok(R.isBlob(link.link))
 
   t.deepEqual(R.parseLink(secretBlob), {
     link: "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256",
