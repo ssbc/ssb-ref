@@ -2,10 +2,11 @@ var isDomain = require('is-valid-domain')
 var Querystring = require('querystring')
 var ip = require('ip')
 var protocolRegex = /^(net|wss?|onion)$/
+var parseLinkRegex = /^((@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+)(\?(.+))?$/
 var linkRegex = exports.linkRegex = /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/
 var feedIdRegex = exports.feedIdRegex = /^@[A-Za-z0-9\/+]{43}=\.(?:sha256|ed25519)$/
 var msgIdRegex = exports.msgIdRegex = /^%[A-Za-z0-9\/+]{43}=\.sha256$/
-var blobIdRegex = exports.blobIdRegex = /^(&[A-Za-z0-9\/+]{43}=\.sha256)(\?(.+))?$/
+var blobIdRegex = exports.blobIdRegex = /^&[A-Za-z0-9\/+]{43}=\.sha256$/
 var multiServerAddressRegex = /^\w+\:.+~shs\:/
 var extractRegex = /([@%&][A-Za-z0-9\/+]{43}=\.[\w\d]+)/
 
@@ -157,11 +158,11 @@ var isInvite = exports.isInvite =
     return isLegacyInvite(data) || isMultiServerInvite(data)
   }
 
-exports.parseBlob = function parseBlob (ref) {
-  var match = blobIdRegex.exec(ref)
+exports.parseLink = function parseBlob (ref) {
+  var match = parseLinkRegex.exec(ref)
   if (match && match[1]) {
     if (match[3]) {
-      return {link: match[1], query: Querystring.parse(match[3])}
+      return {link: match[1], query: Querystring.parse(match[4])}
     } else {
       return {link: match[1]}
     }
