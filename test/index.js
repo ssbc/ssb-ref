@@ -16,6 +16,10 @@ var ipv6Invite = "2a03:2267::ba27:ebff:fe8c:5a4d:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4
 var ipv6AddrLocal = "::1:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519"
 var ipv6InviteLocal = "::1:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519~DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
 
+var blob = "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256"
+var secretBlob = "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256?unbox=abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs&another=test"
+var secretMessage = "%abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256?unbox=abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs"
+
 var R = require('../')
 var tape = require('tape')
 
@@ -152,6 +156,15 @@ var blobUrls = [
   'http://localhost:7777/&amp;51ZXxNYIvTDCoNTE9R94NiEg3JAZAxWtKn4h4SmBwyY=.sha256?foo=bar'
 ]
 
+tape('extract with non url-encoded links', function (t) {
+  var messageIdWithNumberAtStart = '%09abcdefghyq9KH6dYMc/g17L04jDbl1py8arGQmL1I=.sha256'
+  t.equal(R.extract(messageIdWithNumberAtStart), messageIdWithNumberAtStart)
+  t.equal(R.extract(encodeURIComponent(messageIdWithNumberAtStart)), messageIdWithNumberAtStart)
+  t.equal(R.extract(encodeURIComponent(msgRef)), msgRef)
+  t.equal(R.extract(msgRef), msgRef)
+  t.end()
+})
+
 tape('extract', function (t) {
   msgUrls.forEach(function (url) {
     t.equal(R.extract(url), msgRef)
@@ -165,12 +178,41 @@ tape('extract', function (t) {
   t.end()
 })
 
+tape('parse link', function (t) {
+  t.deepEqual(R.parseLink(secretMessage), {
+    link: "%abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256",
+    query: {
+      unbox: "abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs"
+    }
+  })
+  t.end()
+})
 
+tape('blob', function (t) {
+  t.ok(R.isBlob(blob))
 
+  // shouldn't accept a blob with a query string
+  // this should be handled by parseLink
+  t.notOk(R.isBlob(secretBlob))
 
+  var link = R.parseLink(blob)
 
+  t.deepEqual(link, {
+    link: blob
+  })
 
+  t.ok(R.isBlob(link.link))
 
+  t.deepEqual(R.parseLink(secretBlob), {
+    link: "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256",
+    query: {
+      unbox: "abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs",
+      another: "test"
+    }
+  })
+
+  t.end()
+})
 
 
 
