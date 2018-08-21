@@ -1,6 +1,6 @@
 # ssb-ref
 
-check if a string is a valid ssb-reference
+check if a string is a valid ssb-reference, also parses addresses
 
 ``` js
 var ref = require('ssb-ref')
@@ -28,7 +28,16 @@ ref.extract('http://localhost:7777/#/msg/%pGzeEydYdHjKW1iIchR0Yumydsr3QSp8+FuYcw
  == '%pGzeEydYdHjKW1iIchR0Yumydsr3QSp8+FuYcwVwi8Q=.sha256'
 //url-encoding is supported
 ref.extract('http://localhost:7777/#/msg/%25pGzeEydYdHjKW1iIchR0Yumydsr3QSp8%2BFuYcwVwi8Q%3D.sha256?foo=bar')
- == '%pGzeEydYdHjKW1iIchR0Yumydsr3QSp8+FuYcwVwi8Q=.sha256' 
+ == '%pGzeEydYdHjKW1iIchR0Yumydsr3QSp8+FuYcwVwi8Q=.sha256'
+
+// check if a ref is a valid address
+ref.isAddress('net:[fe80::1488:a895:bee0:d1b4%en0]:8008~shs:FCX/tsDLpubCPKKfIrw4gc+SQkHcaD17s7GI6i/ziWY=') == false
+
+// parse the port, host and key from an adress
+ref.parseAddress('net:192.168.8.9:8008~shs:FCX/tsDLpubCPKKfIrw4gc+SQkHcaD17s7GI6i/ziWY=')
+  { host: '192.168.8.9',
+    port: 8008,
+    key: '@FCX/tsDLpubCPKKfIrw4gc+SQkHcaD17s7GI6i/ziWY=.ed25519' }
 ```
 
 ## License
