@@ -1,10 +1,10 @@
 var isDomain = require('is-valid-domain')
 var Querystring = require('querystring')
 var ip = require('ip')
-var protocolRegex = /^(net|wss?|onion)$/
+var protocolRegex = /^(net|wss?|onion|rtc)$/
 var parseLinkRegex = /^((@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+)(\?(.+))?$/
 var linkRegex = exports.linkRegex = /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/
-var feedIdRegex = exports.feedIdRegex = /^@[A-Za-z0-9\/+]{43}=\.(?:sha256|ed25519)$/
+var feedIdRegex = exports.feedIdRegex = /^@([A-Za-z0-9\/+]{43}=)\.(?:sha256|ed25519)$/
 var msgIdRegex = exports.msgIdRegex = /^%[A-Za-z0-9\/+]{43}=\.sha256$/
 var blobIdRegex = exports.blobIdRegex = /^&[A-Za-z0-9\/+]{43}=\.sha256$/
 var multiServerAddressRegex = /^\w+\:.+~shs\:/
