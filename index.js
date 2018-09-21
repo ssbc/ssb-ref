@@ -53,6 +53,15 @@ var isBlobId = exports.isBlob = exports.isBlobId =
     return isString(data) && blobIdRegex.test(data)
   }
 
+exports.isBlobLink = function (s) {
+  return s[0] === '&' && isLink(s)
+}
+
+exports.isMsgLink = function (s) {
+  return s[0] === '%' && isLink(s)
+}
+
+
 var normalizeChannel = exports.normalizeChannel =
   function (data) {
     if (typeof data === 'string') {
@@ -262,5 +271,11 @@ exports.extract =
       return res && res[0]
     }
   }
+
+
+
+
+
+
 
 
