@@ -185,8 +185,11 @@ tape('parse link', function (t) {
       unbox: "abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs"
     }
   })
+  t.ok(R.isMsgLink(secretMessage))
   t.end()
 })
+
+
 
 tape('blob', function (t) {
   t.ok(R.isBlob(blob))
