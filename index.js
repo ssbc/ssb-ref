@@ -35,7 +35,7 @@ function isObject (o) {
 
 var isLink = exports.isLink =
   function (data) {
-    return isString(data) && linkRegex.test(data)
+    return isString(data) && parseLinkRegex.test(data)
   }
 
 var isFeedId = exports.isFeed = exports.isFeedId =
