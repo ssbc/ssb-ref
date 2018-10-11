@@ -1,7 +1,7 @@
 var isDomain = require('is-valid-domain')
 var Querystring = require('querystring')
 var ip = require('ip')
-var protocolRegex = /^(net|wss?|onion|rtc)$/
+var protocolRegex = /^(\w+)$/
 var parseLinkRegex = /^((@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+)(\?(.+))?$/
 var linkRegex = exports.linkRegex = /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/
 var feedIdRegex = exports.feedIdRegex = /^@([A-Za-z0-9\/+]{43}=)\.(?:sha256|ed25519)$/
@@ -75,22 +75,25 @@ var normalizeChannel = exports.normalizeChannel =
 var parseMultiServerAddress = function (data) {
   if(!isString(data)) return false
   if(!multiServerAddressRegex.test(data)) return false
+
   data = data.split('~').map(function (e) {
     return e.split(':')
   })
 
+/*
   if(data.length != 2) return false
-  if(!(data[0].length >= 3)) return false
+  if(!(data[0].length >= 2)) return false
   if(!(data[1].length == 2 || data[1].length == 3)) return false
   if(!protocolRegex.test(data[0][0])) return false
   if(data[1][0] !== 'shs') return false
-
+*/
   var port = +data[0][data[0].length - 1] //last item is port, handle ipv6
   var host = data[0].slice(1, data[0].length - 1).join(':') //ipv6
   var key = '@'+data[1][1]+'.ed25519'
   var seed = data[1][2]
-
-  if(!(isHost(host) && isPort(+port) && isFeedId(key))) return false
+  
+  // allow multiserver addresses that are not currently understood!
+//  if(!(isHost(host) && isPort(+port) && isFeedId(key))) return false
   var addr = {
     host: host,
     port: port,
@@ -100,6 +103,14 @@ var parseMultiServerAddress = function (data) {
     addr.seed = seed
 
   return addr
+}
+
+var isLegacyAddress = exports.isLegacyAddress = function (addr) {
+  return isObject(addr) && isHost(addr.host) && isPort(addr.port) && isFeedId(addr.key)
+}
+
+var toMultiServerAddress = exports.toMultiServerAddress = function (addr) {
+  return 'net:'+addr.host+':'+addr.port+'~shs:'+addr.key.substring(1, addr.key.indexOf('.'))
 }
 
 var isAddress = exports.isAddress = function (data) {
@@ -271,4 +282,8 @@ exports.extract =
       return res && res[0]
     }
   }
+
+
+
+
 
