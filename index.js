@@ -6,9 +6,9 @@ var protocolRegex = /^(net|wss?|onion|rtc)$/
 var parseLinkRegex = /^((@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+)(\?(.+))?$/
 var linkRegex = exports.linkRegex = /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/
 
-var feedIdRegex = isCanonicalBase64('@', '\.(?:sha256|ed25519)')
-var blobIdRegex = isCanonicalBase64('&', '\.sha256')
-var msgIdRegex = isCanonicalBase64('#', '\.sha256')
+var feedIdRegex = isCanonicalBase64('@', '\.(?:sha256|ed25519)', 32)
+var blobIdRegex = isCanonicalBase64('&', '\.sha256', 32)
+var msgIdRegex = isCanonicalBase64('#', '\.sha256', 32)
 
 var multiServerAddressRegex = /^\w+\:.+~shs\:/
 var extractRegex = /([@%&][A-Za-z0-9\/+]{43}=\.[\w\d]+)/
