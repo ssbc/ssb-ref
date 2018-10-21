@@ -1,12 +1,15 @@
+var isCanonicalBase64 = require('canonical-base64')
 var isDomain = require('is-valid-domain')
 var Querystring = require('querystring')
 var ip = require('ip')
 var protocolRegex = /^(net|wss?|onion|rtc)$/
 var parseLinkRegex = /^((@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+)(\?(.+))?$/
 var linkRegex = exports.linkRegex = /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/
-var feedIdRegex = exports.feedIdRegex = /^@([A-Za-z0-9\/+]{43}=)\.(?:sha256|ed25519)$/
-var msgIdRegex = exports.msgIdRegex = /^%[A-Za-z0-9\/+]{43}=\.sha256$/
-var blobIdRegex = exports.blobIdRegex = /^&[A-Za-z0-9\/+]{43}=\.sha256$/
+
+var feedIdRegex = isCanonicalBase64('@', '\.(?:sha256|ed25519)')
+var blobIdRegex = isCanonicalBase64('&', '\.sha256')
+var msgIdRegex = isCanonicalBase64('#', '\.sha256')
+
 var multiServerAddressRegex = /^\w+\:.+~shs\:/
 var extractRegex = /([@%&][A-Za-z0-9\/+]{43}=\.[\w\d]+)/
 
