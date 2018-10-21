@@ -62,6 +62,8 @@ tape('multiserver invite', function (t) {
       redirect: '#'+rand
     })
 
+  t.equal(R.getKeyFromAddress(invite1), '@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519')
+
   t.deepEqual(
     R.parseInvite(cjdnsInvite2+'#'+rand),
     {
@@ -216,16 +218,4 @@ tape('blob', function (t) {
 
   t.end()
 })
-
-
-
-
-
-
-
-
-
-
-
-
 
