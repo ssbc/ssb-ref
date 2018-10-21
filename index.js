@@ -7,8 +7,10 @@ var linkRegex = exports.linkRegex = /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/
 var feedIdRegex = exports.feedIdRegex = /^@([A-Za-z0-9\/+]{43}=)\.(?:sha256|ed25519)$/
 var msgIdRegex = exports.msgIdRegex = /^%[A-Za-z0-9\/+]{43}=\.sha256$/
 var blobIdRegex = exports.blobIdRegex = /^&[A-Za-z0-9\/+]{43}=\.sha256$/
-var multiServerAddressRegex = /^\w+\:.+~shs\:/
+//var multiServerAddressRegex = /^\w+\:.+~shs\:/
 var extractRegex = /([@%&][A-Za-z0-9\/+]{43}=\.[\w\d]+)/
+
+var MultiServerAddress = require('multiserver-address')
 
 function isIP (s) {
   return ip.isV4Format(s) || ip.isV6Format(s)
@@ -72,9 +74,28 @@ var normalizeChannel = exports.normalizeChannel =
     }
   }
 
-var parseMultiServerAddress = function (data) {
+function deprecate (name, fn) {
+  var logged = false
+  return function () {
+    var args = [].slice.call(arguments)
+    if(!logged) {
+      console.error('deprecated api used:'+name)
+      logged = true
+    }
+    return fn.apply(this, args)
+  }
+}
+
+var log_deprecated = false
+var parseMultiServerAddress = deprecate('ssb-ref.parseMultiServerAddress', function (data) {
+  if(!log_deprecated) {
+    log_deprecated = true
+    console.error('deprecated: parseMultiServerAddress')
+  }
   if(!isString(data)) return false
-  if(!multiServerAddressRegex.test(data)) return false
+  if(!MultiServerAddress.check(data)) return false
+
+//  data = MultiServerAddress.decode(data)
 
   data = data.split('~').map(function (e) {
     return e.split(':')
@@ -103,13 +124,14 @@ var parseMultiServerAddress = function (data) {
     addr.seed = seed
 
   return addr
-}
+})
 
 var isLegacyAddress = exports.isLegacyAddress = function (addr) {
   return isObject(addr) && isHost(addr.host) && isPort(addr.port) && isFeedId(addr.key)
 }
 
 var toMultiServerAddress = exports.toMultiServerAddress = function (addr) {
+  if(MultiServerAddress.check(addr)) return addr
   return 'net:'+addr.host+':'+addr.port+'~shs:'+addr.key.substring(1, addr.key.indexOf('.'))
 }
 
@@ -121,7 +143,8 @@ var isAddress = exports.isAddress = function (data) {
     port = data.port
   }
   else if(!isString(data)) return false
-  else if(parseMultiServerAddress(data)) return true
+  else if(MultiServerAddress.check(data)) return true
+//  else if(parseMultiServerAddress(data)) return true
   else {
     var parts = data.split(':')
     var id = parts.pop(), port = parts.pop(), host = parts.join(':')
@@ -132,7 +155,24 @@ var isAddress = exports.isAddress = function (data) {
   )
 }
 
-var parseAddress = exports.parseAddress = function (e) {
+//This is somewhat fragile, because maybe non-shs protocols get added...
+//it would be better to treat all addresses as opaque or have multiserver handle
+//extraction of a signing key from the address.
+var getKeyFromAddress = exports.getKeyFromAddress = function (addr) {
+  if(addr.key) return addr.key
+  var data = MultiServerAddress.decode(addr)
+  if(!data) return
+  for(var k in data) {
+    var address = data[k]
+    for(var j in address) {
+      var protocol = address[j]
+      if(/^shs/.test(protocol.name)) //forwards compatible with future shs versions...
+        return '@'+protocol.data[0]+'.ed25519'
+    }
+  }
+}
+
+var parseAddress = exports.parseAddress = deprecate('ssb-ref.parseAddress', function (e) {
   if(isString(e)) {
     if(~e.indexOf('~'))
       return parseMultiServerAddress(e)
@@ -146,7 +186,7 @@ var parseAddress = exports.parseAddress = function (e) {
     return e
   }
   return e
-}
+})
 
 var toAddress = exports.toAddress = function (e) {
   e = exports.parseAddress(e)
@@ -234,10 +274,10 @@ function parseMultiServerInvite (invite) {
   }
 }
 
-exports.parseLegacyInvite = parseLegacyInvite
-exports.parseMultiServerInvite = parseMultiServerInvite
+exports.parseLegacyInvite = deprecate('ssb-ref.parseLegacyInvite', parseLegacyInvite)
+exports.parseMultiServerInvite = deprecate('ssb-ref.parseMultiServerInvite', parseMultiServerInvite)
 
-exports.parseInvite = function (invite) {
+exports.parseInvite = deprecate('ssb-ref.parseInvite', function (invite) {
   return (
     isLegacyInvite(invite)
   ? parseLegacyInvite(invite)
@@ -245,7 +285,7 @@ exports.parseInvite = function (invite) {
   ? parseMultiServerInvite(invite)
   : null
   )
-}
+})
 
 exports.type =
   function (id) {
@@ -282,7 +322,6 @@ exports.extract =
       return res && res[0]
     }
   }
-
 
 
 
