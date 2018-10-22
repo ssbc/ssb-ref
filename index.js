@@ -95,36 +95,31 @@ var parseMultiServerAddress = deprecate('ssb-ref.parseMultiServerAddress', funct
   if(!isString(data)) return false
   if(!MultiServerAddress.check(data)) return false
 
-//  data = MultiServerAddress.decode(data)
-
-  data = data.split('~').map(function (e) {
-    return e.split(':')
+  var addr = MultiServerAddress.decode(data)
+  addr = addr.find(function (address) {
+    return /^(net|wss?|onion)$/.test(address[0].name) && /^shs/.test(address[1].name)
   })
+  var port = +addr[0].data.pop() //last item always port, to handle ipv6
 
-/*
-  if(data.length != 2) return false
-  if(!(data[0].length >= 2)) return false
-  if(!(data[1].length == 2 || data[1].length == 3)) return false
-  if(!protocolRegex.test(data[0][0])) return false
-  if(data[1][0] !== 'shs') return false
-*/
-  var port = +data[0][data[0].length - 1] //last item is port, handle ipv6
-  var host = data[0].slice(1, data[0].length - 1).join(':') //ipv6
-  var key = '@'+data[1][1]+'.ed25519'
-  var seed = data[1][2]
-  
+  //preserve protocol type on websocket addresses
+  var host = (/^wss?$/.test(addr[0].name) == 'ws' ? addr[0].name+':' : '') + addr[0].data.join(':')
+
+  var key = '@'+addr[1].data[0]+'.ed25519'
+  var seed = addr[1].data[2]
   // allow multiserver addresses that are not currently understood!
-//  if(!(isHost(host) && isPort(+port) && isFeedId(key))) return false
-  var addr = {
+  if(!(isHost(host) && isPort(+port) && isFeedId(key))) return false
+  var address = {
     host: host,
     port: port,
     key: key,
   }
   if(seed)
-    addr.seed = seed
+    address.seed = seed
 
-  return addr
+  return address
 })
+
+exports.toLegacyAddress = parseMultiServerAddress
 
 var isLegacyAddress = exports.isLegacyAddress = function (addr) {
   return isObject(addr) && isHost(addr.host) && isPort(addr.port) && isFeedId(addr.key)
@@ -132,7 +127,11 @@ var isLegacyAddress = exports.isLegacyAddress = function (addr) {
 
 var toMultiServerAddress = exports.toMultiServerAddress = function (addr) {
   if(MultiServerAddress.check(addr)) return addr
-  return 'net:'+addr.host+':'+addr.port+'~shs:'+addr.key.substring(1, addr.key.indexOf('.'))
+  return (
+    /^wss?:/.test(addr.host)   ? addr.host
+  : /\.onion$/.test(addr.host) ? 'onion:'+addr.host
+  :                              'net:'+addr.host
+  )+':'+addr.port+'~shs:'+addr.key.substring(1, addr.key.indexOf('.'))
 }
 
 var isAddress = exports.isAddress = function (data) {
@@ -317,12 +316,10 @@ exports.extract =
       try { _data = decodeURIComponent(data) }
       catch (e) {} // this may fail if it's not encoded, so don't worry if it does
       _data = _data.replace(/&amp;/g, '&')
-  
+
       var res = extractRegex.exec(_data)
       return res && res[0]
     }
   }
-
-
 
 
