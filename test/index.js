@@ -20,8 +20,15 @@ var blob = "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256"
 var secretBlob = "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256?unbox=abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs&another=test"
 var secretMessage = "%abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256?unbox=abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs"
 
+var msg_id = '%YPqekTHlErYzPzzonLC29mrkofpPDuQbUh+DgQYD6H4=.sha256'
+
 var R = require('../')
 var tape = require('tape')
+
+tape('msg', function (t) {
+  t.ok(R.isMsg(msg_id))
+  t.end()
+})
 
 tape('ipv6 invite', function (t) {
   t.ok(R.isAddress(ipv6Addr))
