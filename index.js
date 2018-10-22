@@ -127,6 +127,10 @@ var isLegacyAddress = exports.isLegacyAddress = function (addr) {
 
 var toMultiServerAddress = exports.toMultiServerAddress = function (addr) {
   if(MultiServerAddress.check(addr)) return addr
+  if(!isPort(addr.port)) throw new Error('ssb-ref.toMultiServerAddress - invalid port:'+addr.port)
+  if(!isHost(addr.host)) throw new Error('ssb-ref.toMultiServerAddress - invalid host:'+addr.host)
+  if(!isFeedId(addr.key)) throw new Error('ssb-ref.toMultiServerAddress - invalid key:'+addr.key)
+
   return (
     /^wss?:/.test(addr.host)   ? addr.host
   : /\.onion$/.test(addr.host) ? 'onion:'+addr.host
@@ -308,6 +312,8 @@ exports.extract =
       return res && res[0]
     }
   }
+
+
 
 
 
