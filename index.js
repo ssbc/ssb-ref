@@ -87,12 +87,7 @@ function deprecate (name, fn) {
   }
 }
 
-var log_deprecated = false
 var parseMultiServerAddress = deprecate('ssb-ref.parseMultiServerAddress', function (data) {
-  if(!log_deprecated) {
-    log_deprecated = true
-    console.error('deprecated: parseMultiServerAddress')
-  }
   if(!isString(data)) return false
   if(!MultiServerAddress.check(data)) return false
 
@@ -312,6 +307,11 @@ exports.extract =
       return res && res[0]
     }
   }
+
+
+
+
+
 
 
 
