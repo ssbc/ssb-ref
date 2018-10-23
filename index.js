@@ -82,7 +82,7 @@ function deprecate (name, fn) {
   return function () {
     var args = [].slice.call(arguments)
     if(!logged) {
-      console.error('deprecated api used:'+name)
+      console.trace('deprecated api used: '+name)
       logged = true
     }
     return fn.apply(this, args)
