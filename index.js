@@ -1,4 +1,4 @@
-var isCanonicalBase64 = require('canonical-base64')
+var isCanonicalBase64 = require('is-canonical-base64')
 var isDomain = require('is-valid-domain')
 var Querystring = require('querystring')
 var ip = require('ip')
