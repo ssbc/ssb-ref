@@ -45,11 +45,6 @@ function isObject (o) {
   return o && 'object' === typeof o && !Array.isArray(o)
 }
 
-var isLink = exports.isLink =
-  function (data) {
-    return isString(data) && parseLinkRegex.test(data)
-  }
-
 var isFeedId = exports.isFeed = exports.isFeedId =
   function (data) {
     return isString(data) && feedIdRegex.test(data)
@@ -64,6 +59,15 @@ var isBlobId = exports.isBlob = exports.isBlobId =
   function (data) {
     return isString(data) && blobIdRegex.test(data)
   }
+
+var isLink = exports.isLink =
+  function (data) {
+    if(!isString(data)) return false
+    var index = data.indexOf('?')
+    data = ~index ? data.substring(0, index) : data
+    return isString(data) && (isFeedId(data) || isMsgId(data) || isBlobId(data))
+  }
+
 
 exports.isBlobLink = function (s) {
   return s[0] === '&' && isLink(s)
@@ -320,5 +324,7 @@ exports.extract =
       return res && res[0]
     }
   }
+
+
 
 
