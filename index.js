@@ -98,8 +98,7 @@ var parseMultiServerAddress = deprecate('ssb-ref.parseMultiServerAddress', funct
     return /^(net|wss?|onion)$/.test(address[0].name) && /^shs/.test(address[1].name)
   })
   if (!Array.isArray(addr)) {
-	  console.trace('got no addr from', data)
-	  return false
+    return false
   }
   var port = +addr[0].data.pop() //last item always port, to handle ipv6
 
@@ -256,6 +255,7 @@ function parseMultiServerInvite (invite) {
 
   invite = redirect.shift()
   var addr = toLegacyAddress(invite)
+  if(!addr) return null
   delete addr.seed
   return {
     invite: invite,
