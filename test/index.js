@@ -228,8 +228,8 @@ tape('blob', function (t) {
 
 tape('urls', function (t) {
   var url = 'http://example.com'
-  t.equal(R.type(url), 'address')
-  t.equal(R.isAddress(url), true)
+  t.equal(R.type(url), false)
+  t.equal(R.isAddress(url), false)
   t.equal(R.isMultiServerInvite(url), false)
   t.equal(R.isInvite(url), false)
   t.equal(R.isMsg(url), false)
