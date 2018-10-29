@@ -13,6 +13,13 @@ var extractRegex = /([@%&][A-Za-z0-9\/+]{43}=\.[\w\d]+)/
 
 var MultiServerAddress = require('multiserver-address')
 
+function isMultiServerAddress (str) {
+  //a http url fits into the multiserver scheme,
+  //but all ssb address must have a transport and a transform
+  //so check there is at least one unescaped ~ in the address
+  return MultiServerAddress.check(str) && /[^!][~]/.test(str)
+}
+
 function isIP (s) {
   return ip.isV4Format(s) || ip.isV6Format(s)
 }
@@ -146,7 +153,7 @@ var isAddress = exports.isAddress = function (data) {
     port = data.port
   }
   else if(!isString(data)) return false
-  else if(MultiServerAddress.check(data)) return true
+  else if(isMultiServerAddress(data)) return true
   else {
     var parts = data.split(':')
     var id = parts.pop(), port = parts.pop(), host = parts.join(':')
@@ -313,4 +320,5 @@ exports.extract =
       return res && res[0]
     }
   }
+
 
