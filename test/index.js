@@ -27,6 +27,8 @@ var tape = require('tape')
 
 tape('msg', function (t) {
   t.ok(R.isMsg(msg_id))
+  t.ok(R.isLink(msg_id))
+  t.ok(R.isMsgLink(msg_id))
   t.end()
 })
 
@@ -241,6 +243,8 @@ tape('urls', function (t) {
 
   t.end()
 })
+
+
 
 
 
