@@ -106,6 +106,8 @@ var parseMultiServerAddress = deprecate('ssb-ref.parseMultiServerAddress', funct
 
   var addr = MultiServerAddress.decode(data)
   addr = addr.find(function (address) {
+    if (!address[0]) return false
+    if (!address[1]) return false
     return /^(net|wss?|onion)$/.test(address[0].name) && /^shs/.test(address[1].name)
   })
   if (!Array.isArray(addr)) {
