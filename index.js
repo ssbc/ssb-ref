@@ -100,7 +100,7 @@ function deprecate (name, fn) {
   }
 }
 
-function _parseMultiServerAddress (data) {
+var parseMultiServerAddress = deprecate('ssb-ref.parseMultiServerAddress', function (data) {
   if(!isString(data)) return false
   if(!MultiServerAddress.check(data)) return false
 
@@ -130,9 +130,7 @@ function _parseMultiServerAddress (data) {
     address.seed = seed
 
   return address
-}
-
-var parseMultiServerAddress = deprecate('ssb-ref.parseMultiServerAddress', _parseMultiServerAddress)
+})
 
 var toLegacyAddress = exports.toLegacyAddress = parseMultiServerAddress
 
@@ -189,10 +187,10 @@ var getKeyFromAddress = exports.getKeyFromAddress = function (addr) {
   }
 }
 
-function _parseAddress (e) {
+var parseAddress = exports.parseAddress = deprecate('ssb-ref.parseAddress', function (e) {
   if(isString(e)) {
     if(~e.indexOf('~'))
-      return _parseMultiServerAddress(e)
+      return parseMultiServerAddress(e)
     var parts = e.split(':')
     var id = parts.pop(), port = parts.pop(), host = parts.join(':')
     var e = {
@@ -203,12 +201,10 @@ function _parseAddress (e) {
     return e
   }
   return e
-}
-
-exports.parseAddress = deprecate('ssb-ref.parseAddress', _parseAddress)
+})
 
 var toAddress = exports.toAddress = function (e) {
-  e = _parseAddress(e)
+  e = exports.parseAddress(e)
   e.port = e.port || DEFAULT_PORT
   e.host = e.host || 'localhost'
   return e
@@ -228,7 +224,7 @@ var isLegacyInvite = exports.isLegacyInvite =
 var isMultiServerInvite = exports.isMultiServerInvite =
   function (data) {
     if(!isString(data)) return false
-    return !!_parseMultiServerInvite(data)
+    return !!parseMultiServerInvite(data)
   }
 
 var isInvite = exports.isInvite =
@@ -265,13 +261,13 @@ function parseLegacyInvite (invite) {
   }
 }
 
-function _parseMultiServerInvite (invite) {
+function parseMultiServerInvite (invite) {
 
   var redirect = invite.split('#')
   if(!redirect.length) return null
 
   invite = redirect.shift()
-  var addr = _parseMultiServerAddress(invite)
+  var addr = toLegacyAddress(invite)
   if(!addr) return null
   delete addr.seed
   return {
@@ -283,14 +279,14 @@ function _parseMultiServerInvite (invite) {
 }
 
 exports.parseLegacyInvite = deprecate('ssb-ref.parseLegacyInvite', parseLegacyInvite)
-exports.parseMultiServerInvite = deprecate('ssb-ref.parseMultiServerInvite', _parseMultiServerInvite)
+exports.parseMultiServerInvite = deprecate('ssb-ref.parseMultiServerInvite', parseMultiServerInvite)
 
 exports.parseInvite = deprecate('ssb-ref.parseInvite', function (invite) {
   return (
     isLegacyInvite(invite)
   ? parseLegacyInvite(invite)
   : isMultiServerInvite(invite)
-  ? _parseMultiServerInvite(invite)
+  ? parseMultiServerInvite(invite)
   : null
   )
 })
