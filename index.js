@@ -100,7 +100,7 @@ function deprecate (name, fn) {
   }
 }
 
-var parseMultiServerAddress = deprecate('ssb-ref.parseMultiServerAddress', function (data) {
+var parseMultiServerAddress = function (data) {
   if(!isString(data)) return false
   if(!MultiServerAddress.check(data)) return false
 
@@ -130,9 +130,10 @@ var parseMultiServerAddress = deprecate('ssb-ref.parseMultiServerAddress', funct
     address.seed = seed
 
   return address
-})
+}
 
-var toLegacyAddress = exports.toLegacyAddress = parseMultiServerAddress
+var toLegacyAddress = parseMultiServerAddress
+exports.toLegacyAddress = deprecate('ssb-ref.toLegacyAddress', toLegacyAddress)
 
 var isLegacyAddress = exports.isLegacyAddress = function (addr) {
   return isObject(addr) && isHost(addr.host) && isPort(addr.port) && isFeedId(addr.key)
@@ -187,7 +188,7 @@ var getKeyFromAddress = exports.getKeyFromAddress = function (addr) {
   }
 }
 
-var parseAddress = exports.parseAddress = deprecate('ssb-ref.parseAddress', function (e) {
+var parseAddress = function (e) {
   if(isString(e)) {
     if(~e.indexOf('~'))
       return parseMultiServerAddress(e)
@@ -201,10 +202,11 @@ var parseAddress = exports.parseAddress = deprecate('ssb-ref.parseAddress', func
     return e
   }
   return e
-})
+}
+exports.parseAddress = deprecate('ssb-ref.parseAddress',parseAddress)
 
 var toAddress = exports.toAddress = function (e) {
-  e = exports.parseAddress(e)
+  e = parseAddress(e)
   e.port = e.port || DEFAULT_PORT
   e.host = e.host || 'localhost'
   return e
