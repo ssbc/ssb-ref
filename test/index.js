@@ -20,8 +20,17 @@ var blob = "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256"
 var secretBlob = "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256?unbox=abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs&another=test"
 var secretMessage = "%WgVG9T2IryRoPMCQk7znuMt2Cmo/shgnrbn0wY6gc3M=.sha256?unbox=AZlrtZIJQiHqgwCaB0GgtIiFXha+XN5y6n5NJz/HtunP"
 
+var msg_id = '%YPqekTHlErYzPzzonLC29mrkofpPDuQbUh+DgQYD6H4=.sha256'
+
 var R = require('../')
 var tape = require('tape')
+
+tape('msg', function (t) {
+  t.ok(R.isMsg(msg_id))
+  t.ok(R.isLink(msg_id))
+  t.ok(R.isMsgLink(msg_id))
+  t.end()
+})
 
 tape('ipv6 invite', function (t) {
   t.ok(R.isAddress(ipv6Addr))
@@ -61,6 +70,8 @@ tape('multiserver invite', function (t) {
       key: '@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519',
       redirect: '#'+rand
     })
+
+  t.equal(R.getKeyFromAddress(invite1), '@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519')
 
   t.deepEqual(
     R.parseInvite(cjdnsInvite2+'#'+rand),
@@ -217,6 +228,21 @@ tape('blob', function (t) {
   t.end()
 })
 
+tape('urls', function (t) {
+  var url = 'http://example.com'
+  t.equal(R.type(url), false)
+  t.equal(R.isAddress(url), false)
+  t.equal(R.isMultiServerInvite(url), false)
+  t.equal(R.isInvite(url), false)
+  t.equal(R.isMsg(url), false)
+  t.equal(R.isBlob(url), false)
+  t.equal(R.isFeed(url), false)
+  t.equal(R.isLink(url), false)
+  t.equal(R.getKeyFromAddress(url), undefined)
+  t.equal(R.parseInvite(url), null)
+
+  t.end()
+})
 
 
 
