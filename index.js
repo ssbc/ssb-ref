@@ -239,7 +239,10 @@ exports.parseLink = function parseBlob (ref) {
   var match = parseLinkRegex.exec(ref)
   if (match && match[1]) {
     if (match[3]) {
-      return {link: match[1], query: Querystring.parse(match[4])}
+      var query = Querystring.parse(match[4])
+      // unbox keys have a '+' in them that is parsed into a ' ', this changes it back
+      if (isString(query.unbox)) query.unbox = query.unbox.replace(/ /g, '+')
+      return {link: match[1], query }
     } else {
       return {link: match[1]}
     }
