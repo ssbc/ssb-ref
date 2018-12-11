@@ -120,12 +120,18 @@ tape('legacy invite', function (t) {
 
 tape('parse multiserver address to legacy', function (t) {
 
-  t.ok(R.isAddress(multiserver1))
-  t.deepEqual(R.parseAddress(multiserver1), {
+  var objAddr = {
     host: "145.12.20.3",
     port :8080,
     key: "@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519"
-  })
+  }
+
+  t.ok(R.isAddress(multiserver1))
+  t.deepEqual(R.parseAddress(multiserver1), objAddr)
+
+  t.ok(R.isAddress(objAddr))
+  t.notOk(R.isAddress({}))
+
 
   t.end()
 
@@ -200,8 +206,6 @@ tape('parse link', function (t) {
   t.end()
 })
 
-
-
 tape('blob', function (t) {
   t.ok(R.isBlob(blob))
 
@@ -243,15 +247,6 @@ tape('urls', function (t) {
 
   t.end()
 })
-
-
-
-
-
-
-
-
-
 
 
 
