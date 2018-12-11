@@ -155,20 +155,18 @@ var toMultiServerAddress = exports.toMultiServerAddress = function (addr) {
 var isAddress = exports.isAddress = function (data) {
   var host, port, id
   if(isObject(data)) {
-    id = data.key
-    host = data.host
-    port = data.port
+    id = data.key; host = data.host; port = data.port
   }
   else if(!isString(data)) return false
   else if(isMultiServerAddress(data)) return true
   else {
     var parts = data.split(':')
-    var id = parts.pop(), port = parts.pop(), host = parts.join(':')
-    return (
-      isFeedId(id) && isPort(+port)
-      && isHost(host)
-    )
+    id = parts.pop(); port = parts.pop(); host = parts.join(':')
   }
+  return (
+    isFeedId(id) && isPort(+port)
+    && isHost(host)
+  )
 }
 
 //This is somewhat fragile, because maybe non-shs protocols get added...
@@ -331,6 +329,10 @@ exports.extract =
       return res && res[0]
     }
   }
+
+
+
+
 
 
 
