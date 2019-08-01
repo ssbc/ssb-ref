@@ -5,9 +5,25 @@ var ip = require('ip')
 
 var parseLinkRegex = /^((@|%|&)[A-Za-z0-9/+]{43}=\.[\w\d]+)(\?(.+))?$/
 exports.linkRegex = /^(@|%|&)[A-Za-z0-9/+]{43}=\.[\w\d]+$/
-var feedIdRegex = exports.feedIdRegex = isCanonicalBase64('@', '.(?:sha256|ed25519)', 32)
 var blobIdRegex = exports.blobIdRegex = isCanonicalBase64('&', '.sha256', 32)
 var msgIdRegex = exports.msgIdRegex = isCanonicalBase64('%', '.sha256', 32)
+
+const feedTypes = ['ed25519']
+
+exports.use = (feedType) => {
+  if (typeof feedType !== 'string' || feedType.length === 0) {
+    throw new Error(`Invalid feed type: "${feedType}", expected string with non-zero length`)
+  }
+
+  feedTypes.push(feedType)
+}
+
+Object.defineProperty(exports, 'feedIdRegex', {
+  get: () => {
+    const partialRegex = feedTypes.join('|')
+    return isCanonicalBase64('@', `.(?:sha256|${partialRegex})`, 32)
+  }
+})
 
 var extractRegex = /([@%&][A-Za-z0-9/+]{43}=\.[\w\d]+)/
 
@@ -47,7 +63,7 @@ function isObject (o) {
 
 var isFeedId = exports.isFeed = exports.isFeedId =
   function (data) {
-    return isString(data) && feedIdRegex.test(data)
+    return isString(data) && exports.feedIdRegex.test(data)
   }
 
 var isMsgId = exports.isMsg = exports.isMsgId =
@@ -117,10 +133,10 @@ var parseMultiServerAddress = function (data) {
 
   //preserve protocol type on websocket addresses
   var host = (/^wss?$/.test(addr[0].name) ? addr[0].name+':' : '') + addr[0].data.join(':')
-  var key = '@'+addr[1].data[0]+'.ed25519'
+  var key = addr[1].data[0]
   var seed = addr[1].data[2]
   // allow multiserver addresses that are not currently understood!
-  if(!(isHost(host) && isPort(+port) && isFeedId(key))) return false
+  if(!(isHost(host) && isPort(+port) && isCanonicalBase64(key))) return false
   var address = {
     host: host,
     port: port,
@@ -143,28 +159,33 @@ var toMultiServerAddress = exports.toMultiServerAddress = function (addr) {
   if(MultiServerAddress.check(addr)) return addr
   if(!isPort(addr.port)) throw new Error('ssb-ref.toMultiServerAddress - invalid port:'+addr.port)
   if(!isHost(addr.host)) throw new Error('ssb-ref.toMultiServerAddress - invalid host:'+addr.host)
-  if(!isFeedId(addr.key)) throw new Error('ssb-ref.toMultiServerAddress - invalid key:'+addr.key)
+  if(!isCanonicalBase64(addr.key)) throw new Error('ssb-ref.toMultiServerAddress - invalid key:'+addr.key)
 
   return (
     /^wss?:/.test(addr.host)   ? addr.host
   : /\.onion$/.test(addr.host) ? 'onion:'+addr.host
   :                              'net:'+addr.host
-  )+':'+addr.port+'~shs:'+addr.key.substring(1, addr.key.indexOf('.'))
+  )+':'+addr.port+'~shs:'+addr.key
 }
 
 var isAddress = exports.isAddress = function (data) {
-  var host, port, id
+  let host, port, key
   if(isObject(data)) {
-    id = data.key; host = data.host; port = data.port
-  }
-  else if(!isString(data)) return false
-  else if(isMultiServerAddress(data)) return true
-  else {
-    var parts = data.split(':')
-    id = parts.pop(); port = parts.pop(); host = parts.join(':')
+    key = data.key
+    host = data.host
+    port = data.port
+  } else if(!isString(data)) {
+    return false
+  } else if(isMultiServerAddress(data)) {
+    return true
+  } else {
+    const parts = data.split(':')
+    key = parts.pop()
+    port = parts.pop()
+    host = parts.join(':')
   }
   return (
-    isFeedId(id) && isPort(+port)
+    isCanonicalBase64(key) && isPort(+port)
     && isHost(host)
   )
 }
@@ -181,7 +202,7 @@ exports.getKeyFromAddress = function (addr) {
     for(var j in address) {
       var protocol = address[j]
       if(/^shs/.test(protocol.name)) //forwards compatible with future shs versions...
-        return '@'+protocol.data[0]+'.ed25519'
+        return protocol.data[0]
     }
   }
 }
@@ -202,14 +223,6 @@ var parseAddress = function (e) {
 }
 exports.parseAddress = deprecate('ssb-ref.parseAddress',parseAddress)
 
-var toAddress = exports.toAddress = function (e) {
-  e = parseAddress(e)
-  e.port = e.port || DEFAULT_PORT
-  e.host = e.host || 'localhost'
-  return e
-}
-
-
 var legacyInviteRegex = /^[A-Za-z0-9/+]{43}=$/
 var legacyInviteFixerRegex = /#.*$/
 var isLegacyInvite = exports.isLegacyInvite =
@@ -222,8 +235,11 @@ var isLegacyInvite = exports.isLegacyInvite =
 
 var isMultiServerInvite = exports.isMultiServerInvite =
   function (data) {
-    if(!isString(data)) return false
-    return !!parseMultiServerInvite(data)
+    if (isString(data) === false) {
+      return false
+    }
+
+    return Boolean(parseMultiServerInvite(data))
   }
 
 var isInvite = exports.isInvite =
@@ -246,30 +262,19 @@ exports.parseLink = function parseBlob (ref) {
   }
 }
 
-function parseLegacyInvite (invite) {
-  var redirect = invite.split('#')
-  invite = redirect.shift()
-  var parts = invite.split('~')
-  var addr = toAddress(parts[0])//.split(':')
-  //convert legacy code to multiserver invite code.
-  invite = remote+':'+parts[1]
-  var remote = toMultiServerAddress(addr)
-  return {
-    invite: remote + ':' + parts[1],
-    key: addr.key,
-    remote: remote,
-    redirect: redirect.length ? '#' + redirect.join('#') : null
-  }
-}
-
 function parseMultiServerInvite (invite) {
+  const redirect = invite.split('#')
 
-  var redirect = invite.split('#')
-  if(!redirect.length) return null
+  if (redirect.length === 0) {
+    return null
+  }
 
   invite = redirect.shift()
-  var addr = toLegacyAddress(invite)
-  if(!addr) return null
+
+  const addr = parseMultiServerAddress(invite)
+  if(!addr) {
+    return null
+  }
   delete addr.seed
   return {
     invite: invite,
@@ -279,18 +284,8 @@ function parseMultiServerInvite (invite) {
   }
 }
 
-exports.parseLegacyInvite = deprecate('ssb-ref.parseLegacyInvite', parseLegacyInvite)
 exports.parseMultiServerInvite = deprecate('ssb-ref.parseMultiServerInvite', parseMultiServerInvite)
 
-exports.parseInvite = deprecate('ssb-ref.parseInvite', function (invite) {
-  return (
-    isLegacyInvite(invite)
-  ? parseLegacyInvite(invite)
-  : isMultiServerInvite(invite)
-  ? parseMultiServerInvite(invite)
-  : null
-  )
-})
 
 exports.type =
   function (id) {

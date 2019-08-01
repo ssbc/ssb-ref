@@ -27,6 +27,10 @@ ref.extract('http://localhost:7777/#/msg/%25pGzeEydYdHjKW1iIchR0Yumydsr3QSp8%2BF
 
 ## api
 
+### use(string)
+
+Adds a supported feed type as a string.
+
 ### isLink(string)
 
 returns true if `string` is a either a feed, message, or blob reference.
@@ -91,23 +95,10 @@ might not equal `addr`
 
 convert a multiserver address to a legacy address object.
 
-
-### parseLegacyInvite (string)
-
-return the components of a legacy invite, same output
-as `parseInvite`
-
 ### parseMultiServerInvite (string)
 
 return the components of a multiserver invite, same output
 as `parseInvite`
-
-### parseInvite(invite)
-
-returns an object of data in the invite, returning `{invite,remote,key,redirect}`.
-
-note, the `invite` in the output is the invite as a multiserver
-address.
 
 ### parseAddress(string)
 
