@@ -3,13 +3,13 @@ var isDomain = require('is-valid-domain')
 var Querystring = require('querystring')
 var ip = require('ip')
 
-var parseLinkRegex = /^((@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+)(\?(.+))?$/
-var linkRegex = exports.linkRegex = /^(@|%|&)[A-Za-z0-9\/+]{43}=\.[\w\d]+$/
-var feedIdRegex = exports.feedIdRegex = isCanonicalBase64('@', '\.(?:sha256|ed25519)', 32)
-var blobIdRegex = exports.blobIdRegex = isCanonicalBase64('&', '\.sha256', 32)
-var msgIdRegex = exports.msgIdRegex = isCanonicalBase64('%', '\.sha256', 32)
+var parseLinkRegex = /^((@|%|&)[A-Za-z0-9/+]{43}=\.[\w\d]+)(\?(.+))?$/
+exports.linkRegex = /^(@|%|&)[A-Za-z0-9/+]{43}=\.[\w\d]+$/
+var feedIdRegex = exports.feedIdRegex = isCanonicalBase64('@', '.(?:sha256|ed25519)', 32)
+var blobIdRegex = exports.blobIdRegex = isCanonicalBase64('&', '.sha256', 32)
+var msgIdRegex = exports.msgIdRegex = isCanonicalBase64('%', '.sha256', 32)
 
-var extractRegex = /([@%&][A-Za-z0-9\/+]{43}=\.[\w\d]+)/
+var extractRegex = /([@%&][A-Za-z0-9/+]{43}=\.[\w\d]+)/
 
 var MultiServerAddress = require('multiserver-address')
 
@@ -78,7 +78,7 @@ exports.isMsgLink = function (s) {
 }
 
 
-var normalizeChannel = exports.normalizeChannel =
+exports.normalizeChannel =
   function (data) {
     if (typeof data === 'string') {
       data = data.toLowerCase().replace(/\s|,|\.|\?|!|<|>|\(|\)|\[|\]|"|#/g, '')
@@ -135,7 +135,7 @@ var parseMultiServerAddress = function (data) {
 var toLegacyAddress = parseMultiServerAddress
 exports.toLegacyAddress = deprecate('ssb-ref.toLegacyAddress', toLegacyAddress)
 
-var isLegacyAddress = exports.isLegacyAddress = function (addr) {
+exports.isLegacyAddress = function (addr) {
   return isObject(addr) && isHost(addr.host) && isPort(addr.port) && isFeedId(addr.key)
 }
 
@@ -172,7 +172,7 @@ var isAddress = exports.isAddress = function (data) {
 //This is somewhat fragile, because maybe non-shs protocols get added...
 //it would be better to treat all addresses as opaque or have multiserver handle
 //extraction of a signing key from the address.
-var getKeyFromAddress = exports.getKeyFromAddress = function (addr) {
+exports.getKeyFromAddress = function (addr) {
   if(addr.key) return addr.key
   var data = MultiServerAddress.decode(addr)
   if(!data) return
@@ -192,12 +192,11 @@ var parseAddress = function (e) {
       return parseMultiServerAddress(e)
     var parts = e.split(':')
     var id = parts.pop(), port = parts.pop(), host = parts.join(':')
-    var e = {
+    return {
       host: host,
       port: +(port || DEFAULT_PORT),
       key: id
     }
-    return e
   }
   return e
 }
@@ -211,7 +210,7 @@ var toAddress = exports.toAddress = function (e) {
 }
 
 
-var legacyInviteRegex = /^[A-Za-z0-9\/+]{43}=$/
+var legacyInviteRegex = /^[A-Za-z0-9/+]{43}=$/
 var legacyInviteFixerRegex = /#.*$/
 var isLegacyInvite = exports.isLegacyInvite =
   function (data) {
@@ -258,7 +257,6 @@ function parseLegacyInvite (invite) {
   return {
     invite: remote + ':' + parts[1],
     key: addr.key,
-    redirect: null,
     remote: remote,
     redirect: redirect.length ? '#' + redirect.join('#') : null
   }
@@ -310,25 +308,26 @@ exports.type =
     return false
   }
 
-exports.extract =
-  function (data) {
-    if (!isString(data))
-      return false
+exports.extract = function (data) {
+  if (!isString(data))
+    return false
 
-    var _data = data
+  var _data = data
 
-    var res = extractRegex.exec(_data)
-    if (res) {
-      return res && res[0]
-    } else {
-      try { _data = decodeURIComponent(data) }
-      catch (e) {} // this may fail if it's not encoded, so don't worry if it does
-      _data = _data.replace(/&amp;/g, '&')
+  let res = extractRegex.exec(_data)
+  if (res) {
+    return res && res[0]
+  } else {
+    try { _data = decodeURIComponent(data) }
+    catch (e) {
+      // this may fail if it's not encoded, so don't worry if it does
+    } 
+    _data = _data.replace(/&amp;/g, '&')
 
-      var res = extractRegex.exec(_data)
-      return res && res[0]
-    }
+    res = extractRegex.exec(_data)
+    return res && res[0]
   }
+}
 
 
 
