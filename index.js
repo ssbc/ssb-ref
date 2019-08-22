@@ -78,15 +78,16 @@ exports.isMsgLink = function (s) {
 }
 
 
-var normalizeChannel = exports.normalizeChannel =
-  function (data) {
-    if (typeof data === 'string') {
-      data = data.toLowerCase().replace(/\s|,|\.|\?|!|<|>|\(|\)|\[|\]|"|#/g, '')
-      if (data.length > 0 && data.length < 30) {
-        return data
-      }
+exports.normalizeChannel = function (data) {
+  if (typeof data === 'string') {
+    data = data.toLowerCase().replace(/\s|,|\.|\?|!|<|>|\(|\)|\[|\]|"|#/g, '')
+    if (data.length > 0) {
+      return data
     }
   }
+
+  return null
+}
 
 function deprecate (name, fn) {
   var logged = false
