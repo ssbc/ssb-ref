@@ -1,29 +1,24 @@
-var invite1 = "net:145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=:DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
-var invite2 = "145.12.20.3:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519~DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
-var invite1ws = "ws://145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=:DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
-var multiserver1 = "net:145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc="
-var multiserver2 = "onion:xyz.onion:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc="
+let invite1 = "net:145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=:DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
+let invite2 = "145.12.20.3:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519~DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
+let multiserver1 = "net:145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc="
+let multiserver2 = "onion:xyz.onion:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc="
 
-var seed = 'DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU='
-var cjdnsInvite2 = 'net:fcbc:6c66:bcd4:d3b5:2a2a:60b3:9b86:498f:8008~shs:ppdSxn1pSozJIqtDE4pYgwaQGmswCT9y15VJJcXRntI=:'+seed
-var cjdnsInvite = 'fcbc:6c66:bcd4:d3b5:2a2a:60b3:9b86:498f:8008:@ppdSxn1pSozJIqtDE4pYgwaQGmswCT9y15VJJcXRntI=.ed25519~'+seed
+let cjdnsAddr = 'fcbc:6c66:bcd4:d3b5:2a2a:60b3:9b86:498f:8008:@ppdSxn1pSozJIqtDE4pYgwaQGmswCT9y15VJJcXRntI=.ed25519'
+let cjdnsAddr2 = 'net:fcbc:6c66:bcd4:d3b5:2a2a:60b3:9b86:498f:8008~shs:ppdSxn1pSozJIqtDE4pYgwaQGmswCT9y15VJJcXRntI='
 
-var cjdnsAddr = 'fcbc:6c66:bcd4:d3b5:2a2a:60b3:9b86:498f:8008:@ppdSxn1pSozJIqtDE4pYgwaQGmswCT9y15VJJcXRntI=.ed25519'
-var cjdnsAddr2 = 'net:fcbc:6c66:bcd4:d3b5:2a2a:60b3:9b86:498f:8008~shs:ppdSxn1pSozJIqtDE4pYgwaQGmswCT9y15VJJcXRntI='
+let ipv6Addr = "2a03:2267::ba27:ebff:fe8c:5a4d:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519"
+let ipv6Invite = "2a03:2267::ba27:ebff:fe8c:5a4d:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519~DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
+let ipv6AddrLocal = "::1:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519"
+let ipv6InviteLocal = "::1:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519~DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
 
-var ipv6Addr = "2a03:2267::ba27:ebff:fe8c:5a4d:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519"
-var ipv6Invite = "2a03:2267::ba27:ebff:fe8c:5a4d:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519~DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
-var ipv6AddrLocal = "::1:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519"
-var ipv6InviteLocal = "::1:8080:@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519~DxiHEv+ds+zUzA49efDgZk8ssGeqrp/5kgvRVzTM7vU="
+let blob = "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256"
+let secretBlob = "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256?unbox=abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs&another=test"
+let secretMessage = "%WgVG9T2IryRoPMCQk7znuMt2Cmo/shgnrbn0wY6gc3M=.sha256?unbox=AZlrtZIJQiHqgwCaB0GgtIiFXha+XN5y6n5NJz/HtunP"
 
-var blob = "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256"
-var secretBlob = "&abcdefg6bIh5dmyss7QH7uMrQxz3LKvgjer68we30aQ=.sha256?unbox=abcdefgqAYfzLrychmP5KchZ6JaLHyYv1aYOviDnSZk=.boxs&another=test"
-var secretMessage = "%WgVG9T2IryRoPMCQk7znuMt2Cmo/shgnrbn0wY6gc3M=.sha256?unbox=AZlrtZIJQiHqgwCaB0GgtIiFXha+XN5y6n5NJz/HtunP"
+let msg_id = '%YPqekTHlErYzPzzonLC29mrkofpPDuQbUh+DgQYD6H4=.sha256'
 
-var msg_id = '%YPqekTHlErYzPzzonLC29mrkofpPDuQbUh+DgQYD6H4=.sha256'
-
-var R = require('../')
-var tape = require('tape')
+let R = require('../')
+let tape = require('tape')
 
 tape('msg', function (t) {
   t.ok(R.isMsg(msg_id))
@@ -44,22 +39,14 @@ tape('ipv6 invite', function (t) {
 })
 
 tape('multiserver invite', function (t) {
-  var rand = Math.random()
+  let rand = Math.random()
   t.ok(R.isMultiServerInvite(invite1))
   t.deepEqual(
     R.parseMultiServerInvite(invite1),
     {
       invite: invite1,
       remote: 'net:145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=',
-      key: '@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519',
-      redirect: null
-    })
-  t.deepEqual(
-    R.parseInvite(invite1ws),
-    {
-      invite: invite1ws,
-      remote: 'ws://145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=',
-      key: '@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519',
+      key: 'gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=',
       redirect: null
     })
   t.deepEqual(
@@ -67,63 +54,26 @@ tape('multiserver invite', function (t) {
     {
       invite: invite1,
       remote: 'net:145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=',
-      key: '@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519',
+      key: 'gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=',
       redirect: '#'+rand
     })
 
-  t.equal(R.getKeyFromAddress(invite1), '@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519')
-
-  t.deepEqual(
-    R.parseInvite(cjdnsInvite2+'#'+rand),
-    {
-      invite: cjdnsInvite2,
-      remote: 'net:fcbc:6c66:bcd4:d3b5:2a2a:60b3:9b86:498f:8008~shs:ppdSxn1pSozJIqtDE4pYgwaQGmswCT9y15VJJcXRntI=',
-      key: '@ppdSxn1pSozJIqtDE4pYgwaQGmswCT9y15VJJcXRntI=.ed25519',
-      redirect: '#'+rand
-    })
-
-  t.deepEqual(
-    R.parseInvite(cjdnsInvite+'#'+rand),
-    {
-      invite: cjdnsInvite2,
-      remote: 'net:fcbc:6c66:bcd4:d3b5:2a2a:60b3:9b86:498f:8008~shs:ppdSxn1pSozJIqtDE4pYgwaQGmswCT9y15VJJcXRntI=',
-      key: '@ppdSxn1pSozJIqtDE4pYgwaQGmswCT9y15VJJcXRntI=.ed25519',
-      redirect: '#'+rand
-    })
-
+  t.equal(R.getKeyFromAddress(invite1), 'gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=')
 
   t.end()
 })
 
 tape('legacy invite', function (t) {
-  var rand = Math.random()
   t.ok(R.isLegacyInvite(invite2))
-  t.deepEqual(
-    R.parseLegacyInvite(invite2),
-    {
-      invite: invite1,
-      remote: 'net:145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=',
-      key: '@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519',
-      redirect: null
-    })
-
-  t.deepEqual(
-    R.parseLegacyInvite(invite2+'#'+rand),
-    {
-      invite: invite1,
-      remote: 'net:145.12.20.3:8080~shs:gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=',
-      key: '@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519',
-      redirect: '#'+rand
-    })
   t.end()
 })
 
 tape('parse multiserver address to legacy', function (t) {
 
-  var objAddr = {
+  let objAddr = {
     host: "145.12.20.3",
     port :8080,
-    key: "@gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc=.ed25519"
+    key: "gYCJpN4eGDjHFnWW2Fcusj8O4QYbVDUW6rNYh7nNEnc="
   }
 
   t.ok(R.isAddress(multiserver1))
@@ -144,8 +94,8 @@ tape('check that onions pass', function (t) {
 
 })
 
-var msgRef = '%pGzeEydYdHjKW1iIchR0Yumydsr3QSp8+FuYcwVwi8Q=.sha256'
-var msgUrls = [
+let msgRef = '%pGzeEydYdHjKW1iIchR0Yumydsr3QSp8+FuYcwVwi8Q=.sha256'
+let msgUrls = [
   'http://localhost:7777/#/msg/%25pGzeEydYdHjKW1iIchR0Yumydsr3QSp8%2BFuYcwVwi8Q%3D.sha256',
   'http://localhost:7777/#/msg/%pGzeEydYdHjKW1iIchR0Yumydsr3QSp8+FuYcwVwi8Q=.sha256',
   'http://localhost:7777/%25pGzeEydYdHjKW1iIchR0Yumydsr3QSp8%2BFuYcwVwi8Q%3D.sha256',
@@ -153,8 +103,8 @@ var msgUrls = [
   'http://localhost:7777/%25pGzeEydYdHjKW1iIchR0Yumydsr3QSp8%2BFuYcwVwi8Q%3D.sha256?foo=bar',
   'http://localhost:7777/%pGzeEydYdHjKW1iIchR0Yumydsr3QSp8+FuYcwVwi8Q=.sha256?foo=bar'
 ]
-var feedRef = '@jEA8WSl0URsB/g/XYG5zCGBkMOyTeBZfGtbw3RJMIuk=.ed25519'
-var feedUrls = [
+let feedRef = '@jEA8WSl0URsB/g/XYG5zCGBkMOyTeBZfGtbw3RJMIuk=.ed25519'
+let feedUrls = [
   'http://localhost:7777/#/profile/%40jEA8WSl0URsB%2Fg%2FXYG5zCGBkMOyTeBZfGtbw3RJMIuk%3D.ed25519',
   'http://localhost:7777/#/profile/@jEA8WSl0URsB/g/XYG5zCGBkMOyTeBZfGtbw3RJMIuk=.ed25519',
   'http://localhost:7777/%40jEA8WSl0URsB%2Fg%2FXYG5zCGBkMOyTeBZfGtbw3RJMIuk%3D.ed25519',
@@ -162,8 +112,8 @@ var feedUrls = [
   'http://localhost:7777/%40jEA8WSl0URsB%2Fg%2FXYG5zCGBkMOyTeBZfGtbw3RJMIuk%3D.ed25519?foo=bar',
   'http://localhost:7777/@jEA8WSl0URsB/g/XYG5zCGBkMOyTeBZfGtbw3RJMIuk=.ed25519?foo=bar'
 ]
-var blobRef = '&51ZXxNYIvTDCoNTE9R94NiEg3JAZAxWtKn4h4SmBwyY=.sha256'
-var blobUrls = [
+let blobRef = '&51ZXxNYIvTDCoNTE9R94NiEg3JAZAxWtKn4h4SmBwyY=.sha256'
+let blobUrls = [
   'http://localhost:7777/#/blob/%2651ZXxNYIvTDCoNTE9R94NiEg3JAZAxWtKn4h4SmBwyY%3D.sha256',
   'http://localhost:7777/#/blob/&51ZXxNYIvTDCoNTE9R94NiEg3JAZAxWtKn4h4SmBwyY=.sha256',
   'http://localhost:7777/%2651ZXxNYIvTDCoNTE9R94NiEg3JAZAxWtKn4h4SmBwyY%3D.sha256',
@@ -174,7 +124,7 @@ var blobUrls = [
 ]
 
 tape('extract with non url-encoded links', function (t) {
-  var messageIdWithNumberAtStart = '%09abcdefghyq9KH6dYMc/g17L04jDbl1py8arGQmL1I=.sha256'
+  let messageIdWithNumberAtStart = '%09abcdefghyq9KH6dYMc/g17L04jDbl1py8arGQmL1I=.sha256'
   t.equal(R.extract(messageIdWithNumberAtStart), messageIdWithNumberAtStart)
   t.equal(R.extract(encodeURIComponent(messageIdWithNumberAtStart)), messageIdWithNumberAtStart)
   t.equal(R.extract(encodeURIComponent(msgRef)), msgRef)
@@ -192,6 +142,18 @@ tape('extract', function (t) {
   blobUrls.forEach(function (url) {
     t.equal(R.extract(url), blobRef)
   })
+  t.end()
+})
+
+tape('alternative feed type', (t) => {
+  const newFeedType = 'whatever'
+  const newFeedId = feedRef.replace('ed25519', newFeedType)
+  t.equal(R.isFeedId(newFeedId), false)
+
+  const result = R.use(newFeedType)
+  t.equal(R, result, 'use() returns ssb-ref')
+
+  t.equal(R.isFeedId(newFeedId), true)
   t.end()
 })
 
@@ -213,7 +175,7 @@ tape('blob', function (t) {
   // this should be handled by parseLink
   t.notOk(R.isBlob(secretBlob))
 
-  var link = R.parseLink(blob)
+  let link = R.parseLink(blob)
 
   t.deepEqual(link, {
     link: blob
@@ -233,7 +195,7 @@ tape('blob', function (t) {
 })
 
 tape('urls', function (t) {
-  var url = 'http://example.com'
+  let url = 'http://example.com'
   t.equal(R.type(url), false)
   t.equal(R.isAddress(url), false)
   t.equal(R.isMultiServerInvite(url), false)
@@ -243,7 +205,21 @@ tape('urls', function (t) {
   t.equal(R.isFeed(url), false)
   t.equal(R.isLink(url), false)
   t.equal(R.getKeyFromAddress(url), undefined)
-  t.equal(R.parseInvite(url), null)
+
+  t.end()
+})
+
+tape('urls', function (t) {
+  let url = 'http://example.com'
+  t.equal(R.type(url), false)
+  t.equal(R.isAddress(url), false)
+  t.equal(R.isMultiServerInvite(url), false)
+  t.equal(R.isInvite(url), false)
+  t.equal(R.isMsg(url), false)
+  t.equal(R.isBlob(url), false)
+  t.equal(R.isFeed(url), false)
+  t.equal(R.isLink(url), false)
+  t.equal(R.getKeyFromAddress(url), undefined)
 
   t.end()
 })
