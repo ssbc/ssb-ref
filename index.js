@@ -16,6 +16,7 @@ exports.use = (feedType) => {
   }
 
   feedTypes.push(feedType)
+  return exports
 }
 
 Object.defineProperty(exports, 'feedIdRegex', {
