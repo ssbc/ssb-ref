@@ -3,6 +3,12 @@ var R = require('../')
 
 var feedRef = '@jEA8WSl0URsB/g/XYG5zCGBkMOyTeBZfGtbw3RJMIuk=.ed25519'
 
+tape('isFeed', t => {
+  t.true(R.isFeed(feedRef))
+  t.false(R.isFeed('@cat'))
+  t.end()
+})
+
 var feedUrls = [
   'http://localhost:7777/#/profile/%40jEA8WSl0URsB%2Fg%2FXYG5zCGBkMOyTeBZfGtbw3RJMIuk%3D.ed25519',
   'http://localhost:7777/#/profile/@jEA8WSl0URsB/g/XYG5zCGBkMOyTeBZfGtbw3RJMIuk=.ed25519',
