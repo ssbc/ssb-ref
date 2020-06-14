@@ -7,8 +7,12 @@ var cloaked = '%zoYYzPzPqekTHlErnLC29mrkofpPDuQbUh+DgQYD6H4=.cloaked'
 
 tape('msg', function (t) {
   t.ok(R.isMsg(msgId))
+  t.false(R.isMsg('%cat=.sha256'))
   t.ok(R.isLink(msgId))
   t.ok(R.isMsgLink(msgId))
+
+  t.true(R.isCloakedMsg(cloaked))
+  t.false(R.isCloakedMsg(msgId))
   t.end()
 })
 
