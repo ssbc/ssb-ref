@@ -85,10 +85,11 @@ var normalizeChannel = exports.normalizeChannel =
   function (data) {
     if (typeof data === 'string') {
       data = data.toLowerCase().replace(/\s|,|\.|\?|!|<|>|\(|\)|\[|\]|"|#/g, '')
-      if (data.length > 0 && data.length < 30) {
-        return data
+      if (data.length > 0) {
+        return data.slice(0, 30)
       }
     }
+    return null
   }
 
 function deprecate (name, fn) {
