@@ -59,7 +59,9 @@ or a legacy address, or if `object` is a parsed legacy address
 
 returns a feed id of the address in this key.
 (assumes there is a `shs:` protocol in the address,
-including accepts future version of shs)
+including accepts future version of shs).
+
+returns `undefined` if it fails to parse a key.
 
 ### isInvite(invite)
 
