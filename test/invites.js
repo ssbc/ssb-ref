@@ -100,4 +100,11 @@ tape('legacy invite', function (t) {
       redirect: '#' + rand
     })
   t.end()
+
+  tape('handle non `shs` protocol invites', (t) => {
+    t.doesNotThrow(() => {
+      R.getKeyFromAddress('INVITE sip:0019294040830@51.15.166.54:8008 SIP/2.0')
+    })
+    t.end()
+  })
 })

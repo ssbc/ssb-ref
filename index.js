@@ -175,8 +175,12 @@ var isAddress = exports.isAddress = function (data) {
 // extraction of a signing key from the address.
 exports.getKeyFromAddress = function (addr) {
   if (addr.key) return addr.key
-  var data = MultiServerAddress.decode(addr)
-  if (!data) return
+  try {
+    var data = MultiServerAddress.decode(addr)
+  } catch (err) {
+    console.error(new Error('Attempted connection with malformed multiserver-address ' + addr))
+  }
+  if (!data) return undefined
   for (var k in data) {
     var address = data[k]
     for (var j in address) {
