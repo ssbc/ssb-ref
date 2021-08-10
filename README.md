@@ -32,14 +32,23 @@ ref.extract('http://localhost:7777/#/msg/%25pGzeEydYdHjKW1iIchR0Yumydsr3QSp8%2BF
 returns true if `string` is a either a feed, message, or blob reference.
 it may also include a query string at the end.
 
-### isFeed (string), isMsg(string), isCloakedMsg(string), isBlob(string)
+### isFeed(string), isMsg(string), isCloakedMsg(string), isBlob(string)
 
 returns true if `string` is a feed id, a message id or a blob id,
 respectively. id must not have a query string.
 
-### isFeedId (string), isMsgId(string), isCloakedMsgId(string), isBlobId(string)
+Aliases: `isFeedId`, `isMsgId`, `isCloakedMsgId`, `isBlobId`
 
-Aliases to `isFeed`, `isMsg`, `isCloakedMsg`, `isBlob`
+### isFeedType(string), isMsgType (string), isBlobType(string)
+
+A generalisation of `isFeed`, `isMsg`, `isBlob`.
+Where e.g.
+- isFeed checks if a string is of pattern: @ + <base64, 32bytes> + '.ed2519'
+- isFeedType checks for a pattern: @ + <base64, any number bytes> + '.' + suffix
+
+where `suffix` is any non-empty string made up of: digits, letters, and `-`
+
+Same is true for isMsgType, isBlobType
 
 ### isBlobLink (string), isMsgLink(string)
 

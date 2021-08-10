@@ -4,14 +4,39 @@ var Querystring = require('querystring')
 var ip = require('ip')
 var MultiServerAddress = require('multiserver-address')
 
+/* classic ssb definitions */
 var parseLinkRegex = /^((@|%|&)[A-Za-z0-9/+]{43}=\.[\w\d]+)(\?(.+))?$/
 var feedIdRegex = exports.feedIdRegex = isCanonicalBase64('@', '.(?:sha256|ed25519)', 32)
-var blobIdRegex = exports.blobIdRegex = isCanonicalBase64('&', '.sha256', 32)
 var msgIdRegex = exports.msgIdRegex = isCanonicalBase64('%', '.sha256', 32)
+var blobIdRegex = exports.blobIdRegex = isCanonicalBase64('&', '.sha256', 32)
+
+/* BFE type checks for strings */
+var SUFFIX = '\\.[a-zA-Z\\d-]+'
+var feedTypeIdRegex = exports.feedTypeIdRegex = isCanonicalBase64('@', SUFFIX)
+var msgTypeIdRegex = exports.msgTypeIdRegex = isCanonicalBase64('%', SUFFIX)
+var blobTypeIdRegex = exports.blobTypeIdRegex = isCanonicalBase64('&', SUFFIX)
+
 var cloakedMsgIdRegex = exports.cloakedMsgIdRegex = isCanonicalBase64('%', '.cloaked', 32)
 
 var extractRegex = /([@%&][A-Za-z0-9/+]{43}=\.[\w\d]+)/
 
+var DEFAULT_PORT = 8008
+
+/* basic validators */
+function isString (s) { return typeof s === 'string' }
+function isObject (o) { return o && typeof o === 'object' && !Array.isArray(o) }
+var isInteger = Number.isInteger
+function isIP (s) {
+  return ip.isV4Format(s) || ip.isV6Format(s)
+}
+function isHost (addr) {
+  if (!isString(addr)) return
+  addr = addr.replace(/^wss?:\/\//, '')
+  return (isIP(addr)) || isDomain(addr) || addr === 'localhost'
+}
+function isPort (p) {
+  return isInteger(p) && p <= 65536
+}
 function isMultiServerAddress (str) {
   // a http url fits into the multiserver scheme,
   // but all ssb address must have a transport and a transform
@@ -19,49 +44,38 @@ function isMultiServerAddress (str) {
   return MultiServerAddress.check(str) && /[^!][~]/.test(str)
 }
 
-function isIP (s) {
-  return ip.isV4Format(s) || ip.isV6Format(s)
-}
-
-var isInteger = Number.isInteger
-var DEFAULT_PORT = 8008
-
-function isString (s) {
-  return typeof s === 'string'
-}
-
-var isHost = function (addr) {
-  if (!isString(addr)) return
-  addr = addr.replace(/^wss?:\/\//, '')
-  return (isIP(addr)) || isDomain(addr) || addr === 'localhost'
-}
-
-var isPort = function (p) {
-  return isInteger(p) && p <= 65536
-}
-
-function isObject (o) {
-  return o && typeof o === 'object' && !Array.isArray(o)
-}
-
+/* feed */
 var isFeedId = exports.isFeed = exports.isFeedId =
   function (data) {
     return isString(data) && feedIdRegex.test(data)
   }
+exports.isFeedType = exports.isFeedTypeId =
+  function (data) {
+    return isString(data) && feedTypeIdRegex.test(data)
+  }
 
+/* msg */
 var isMsgId = exports.isMsg = exports.isMsgId =
   function (data) {
     return isString(data) && msgIdRegex.test(data)
   }
-
+exports.isMsgType = exports.isMsgTypeId =
+  function (data) {
+    return isString(data) && msgTypeIdRegex.test(data)
+  }
 exports.isCloakedMsg = exports.isCloakedMsgId =
   function (data) {
     return isString(data) && cloakedMsgIdRegex.test(data)
   }
 
+/* blob */
 var isBlobId = exports.isBlob = exports.isBlobId =
   function (data) {
     return isString(data) && blobIdRegex.test(data)
+  }
+exports.isBlobType = exports.isBlobTypeId =
+  function (data) {
+    return isString(data) && blobTypeIdRegex.test(data)
   }
 
 var isLink = exports.isLink =
@@ -71,11 +85,9 @@ var isLink = exports.isLink =
     data = ~index ? data.substring(0, index) : data
     return isString(data) && (isFeedId(data) || isMsgId(data) || isBlobId(data))
   }
-
 exports.isBlobLink = function (s) {
   return s[0] === '&' && isLink(s)
 }
-
 exports.isMsgLink = function (s) {
   return s[0] === '%' && isLink(s)
 }
